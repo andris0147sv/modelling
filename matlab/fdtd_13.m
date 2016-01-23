@@ -1,5 +1,5 @@
-%% Одномерный FDTD. Версия 1.8
-% Граница раздела. Используются граничные условия ABC первого порядка.
+%% Одномерный FDTD. Версия 1.9
+% Граница раздела. Используются граничные условия ABC второго порядка.
 clear
 
 % Волновое сопротивление свободного пространства
@@ -27,21 +27,32 @@ eps(layer_x: end) = 9.0;
 
 mu = ones (size (Ez));
 
-% !!!
-% Ez(2) в предыдущий момент времени
-oldEzLeft = 0;
+% !!! Коэффициенты для расчета ABC второй степени на левой границе
 
-% !!!
-% Ez(end-1) в предыдущий момент времени
-oldEzRight = 0;
+% Sc' для левой границы
+Sc1Left = Sc / sqrt (mu(1) * eps(1));
 
-% !!!
-% Расчет коэффициентов для граничных условий
-tempLeft = Sc / sqrt (mu(1) * eps(1));
-koeffABCLeft = (tempLeft - 1) / (tempLeft + 1);
+k1Left = -1 / (1 / Sc1Left + 2 + Sc1Left);
+k2Left = 1 / Sc1Left - 2 + Sc1Left;
+k3Left = 2 * (Sc1Left - 1 / Sc1Left);
+k4Left = 4 * (1 / Sc1Left + Sc1Left);
 
-tempRight = Sc / sqrt (mu(end) * eps(end));
-koeffABCRight = (tempRight - 1) / (tempRight + 1);
+% Sc' для правой границы
+Sc1Right = Sc / sqrt (mu(end) * eps(end));
+
+k1Right = -1 / (1 / Sc1Right + 2 + Sc1Right);
+k2Right = 1 / Sc1Right - 2 + Sc1Right;
+k3Right = 2 * (Sc1Right - 1 / Sc1Right);
+k4Right = 4 * (1 / Sc1Right + Sc1Right);
+
+% Ez(1), Ez(2), Ez(3) в предыдущий момент времени (q)
+oldEzLeft1 = zeros(3);
+oldEzRight1 = zeros(3);
+
+% Ez(1), Ez(2), Ez(3) в пред-предыдущий момент времени (q-1)
+oldEzLeft2 = zeros(3);
+oldEzRight2 = zeros(3);
+
 
 % Поле, зарегистрированное в датчике в зависимости от времени
 probeTimeEz = zeros (1, maxTime);
@@ -69,12 +80,23 @@ for t = 1: maxTime
     % Источник возбуждения
     Ez(50) = Ez(50) + exp (-(t + 0.5 - (-0.5) - 30.0) ^ 2 / 100.0);
     
-    % Граничные условия ABC первой степени
-    Ez(1) = oldEzLeft + koeffABCLeft * (Ez(2) - Ez(1));
-    oldEzLeft = Ez(2);
+    % !!!
+    % Граничные условия ABC второй степени (слева)
+    Ez(1) = k1Left * (k2Left * (Ez(3) + oldEzLeft2(1)) +...
+        k3Left * (oldEzLeft1(1) + oldEzLeft1(3) - Ez(2) - oldEzLeft2(2)) - ...
+        k4Left * oldEzLeft1(2)) - oldEzLeft2(3);
     
-    Ez(end) = oldEzRight + koeffABCRight * (Ez(end-1) - Ez(end));
-    oldEzRight = Ez(end-1);
+    oldEzLeft2 = oldEzLeft1;
+    oldEzLeft1 = Ez(1:3);
+    
+    % Граничные условия ABC второй степени (справа)
+    Ez(end) = k1Right * (k2Right * (Ez(end - 2) + oldEzRight2(end)) +...
+        k3Right * (oldEzRight1(end) + oldEzRight1(end - 2) - Ez(end - 1) - oldEzRight2(end - 1)) - ...
+        k4Right * oldEzRight1(end - 1)) - oldEzRight2(end - 2);
+    
+    oldEzRight2 = oldEzRight1;
+    oldEzRight1 = Ez(end-2: end);
+    
     
     % Регистрация поля в точке
     probeTimeEz(t) = Ez(probePos);
