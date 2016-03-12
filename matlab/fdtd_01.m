@@ -5,7 +5,7 @@ clear
 W0 = 120 * pi;
 
 % Время расчета в отсчетах
-maxTime = 1000;
+maxTime = 200;
 
 % Размер области моделирования в отсчетах
 maxSize = 200;
@@ -15,7 +15,7 @@ probePos = 50;
 
 % Начальные условия
 Ez = zeros (1, maxSize);
-Hy = zeros (size (Ez));
+Hy = zeros (1, maxSize);
 
 % Поле, зарегистрированное в датчике в зависимости от времени
 probeTimeEz = zeros (1, maxTime);
@@ -44,4 +44,6 @@ end
 
 figure
 plot (probeTimeEz)
+xlabel ('t, отсчет')
+ylabel ('Ez, В/м')
 grid on
