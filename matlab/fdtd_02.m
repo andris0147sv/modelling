@@ -48,6 +48,8 @@ for t = 1: maxTime
     ylim ([-1.1, 1.1]);
     xlabel ('x, отсчет')
     ylabel ('Ez, В/м')
+    grid on
+    
     pause (0.01)
 end
 
