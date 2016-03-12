@@ -12,13 +12,13 @@ maxTime = 450;
 maxSize = 200;
 
 % Положение датчика, регистрирующего поля
-probePos = 50;
+probePos = 60;
 
 % Положение истоника возбуждения
 sourcePos = 50;
 
 Ez = zeros (1, maxSize);
-Hy = zeros (size (Ez));
+Hy = zeros (1, maxSize);
 
 % Поле, зарегистрированное в датчике в зависимости от времени
 probeTimeEz = zeros (1, maxTime);
@@ -51,8 +51,10 @@ for t = 1: maxTime
     ylim ([-1.1, 1.1]);
     xlabel ('x, отсчет')
     ylabel ('Ez, В/м')
+    grid on
     hold on
     plot ([probePos], [0], 'xk');
+    plot ([sourcePos], [0], '*r');
     hold off
     pause (0.01)
 end

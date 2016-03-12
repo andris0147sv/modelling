@@ -1,5 +1,5 @@
 %% Одномерный FDTD. Версия 1.2
-% Добавлены поглощающие условия
+% Добавлены поглощающие граничные условия
 clear
 
 % Волновое сопротивление свободного пространства
@@ -12,7 +12,10 @@ maxTime = 450;
 maxSize = 200;
 
 % Положение датчика, регистрирующего поля
-probePos = 50;
+probePos = 60;
+
+% Положение истоника возбуждения
+sourcePos = 50;
 
 Ez = zeros (1, maxSize);
 Hy = zeros (size (Ez));
@@ -40,7 +43,7 @@ for t = 1: maxTime
     end
 
     % Источник возбуждения
-    Ez(50) = Ez(50) + exp (-(t - 30.0) ^ 2 / 100.0);
+    Ez(sourcePos) = Ez(sourcePos) + exp (-(t - 30.0) ^ 2 / 100.0);
     
     % Регистрация поля в точке
     probeTimeEz(t) = Ez(probePos);
@@ -50,6 +53,11 @@ for t = 1: maxTime
     ylim ([-1.1, 1.1]);
     xlabel ('x, отсчет')
     ylabel ('Ez, В/м')
+    grid on
+    hold on
+    plot ([probePos], [0], 'xk');
+    plot ([sourcePos], [0], '*r');
+    hold off
     pause (0.01)
 end
 

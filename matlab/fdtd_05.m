@@ -12,10 +12,13 @@ maxTime = 450;
 maxSize = 200;
 
 % Положение датчика, регистрирующего поля
-probePos = 50;
+probePos = 60;
+
+% Положение истоника возбуждения
+sourcePos = 50;
 
 Ez = zeros (1, maxSize);
-Hy = zeros (size (Ez));
+Hy = zeros (1, maxSize);
 
 % Поле, зарегистрированное в датчике в зависимости от времени
 probeTimeEz = zeros (1, maxTime);
@@ -31,7 +34,7 @@ for t = 1: maxTime
         Hy(m) = Hy(m) + (Ez(m + 1) - Ez(m)) / W0;
     end
     
-    Hy(49) = Hy(49) - exp (-(t - 30.0) ^ 2 / 100.0) / W0;
+    Hy(sourcePos - 1) = Hy(sourcePos - 1) - exp (-(t - 30.0) ^ 2 / 100.0) / W0;
     
     % Расчет компоненты поля E
     Ez(1) = Ez(2);
@@ -42,7 +45,7 @@ for t = 1: maxTime
     end
 
     % Источник возбуждения
-    Ez(50) = Ez(50) + exp (-(t + 0.5 - (-0.5) - 30.0) ^ 2 / 100.0);
+    Ez(sourcePos) = Ez(sourcePos) + exp (-(t + 0.5 - (-0.5) - 30.0) ^ 2 / 100.0);
     
     % Регистрация поля в точке
     probeTimeEz(t) = Ez(probePos);
@@ -52,6 +55,11 @@ for t = 1: maxTime
     ylim ([-1.1, 1.1]);
     xlabel ('x, отсчет')
     ylabel ('Ez, В/м')
+    grid on
+    hold on
+    plot ([probePos], [0], 'xk');
+    plot ([sourcePos], [0], '*r');
+    hold off
     pause (0.01)
 end
 
