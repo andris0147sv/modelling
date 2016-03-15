@@ -1,24 +1,23 @@
-%% Расчет спектра гауссова импульса
+%% Расчет спектра дифференцированного гауссова импульса
 
 % Размер массива
-size = 256;
+size = 64;
 
 % шаг по времени
 dt = 1e-10;
 
-A_0 = 100;
 A_max = 100;
-F_max = 1e9;
+F_max = 3e9;
 
 % Шаг по частоте
 df = 1.0 / (size * dt);
 
-w_g = sqrt(log(A_max)) / (pi * F_max);
-d_g = w_g * log (A_0);
+w_g = sqrt(log(5.5 * A_max)) / (pi * F_max);
+d_g = w_g * sqrt (log (2.5 * A_max * sqrt (log (2.5 * A_max))));
 
 % Гауссов импульс
 time = (0:size - 1) * dt;
-gauss = exp (-((time - d_g) / w_g) .^ 2);
+gauss = -2 * ((time - d_g) / w_g) .* exp (-((time - d_g) / w_g) .^ 2);
 
 % Расчет спектра
 spectrum = fft(gauss);
@@ -28,14 +27,14 @@ spectrum = fftshift (spectrum);
 freq = (-size / 2:size / 2 - 1) * df;
 
 % Отображение импульса
-subplot (2, 1, 1)
+subplot (1, 2, 1)
 plot (time, gauss)
 grid on
 xlabel ('Время, с')
 ylabel ('Ez')
 
 % Отображение спектра
-subplot (2, 1, 2)
+subplot (1, 2, 2)
 plot (freq, abs (spectrum))
 grid on
 xlabel ('Частота, Гц')
