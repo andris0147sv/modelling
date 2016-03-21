@@ -6,7 +6,7 @@ clear
 W0 = 120 * pi;
 
 % Время расчета в отсчетах
-maxTime = 450;
+maxTime = 300;
 
 % Размер области моделирования в отсчетах
 maxSize = 200;
@@ -15,7 +15,7 @@ maxSize = 200;
 probePos = 60;
 
 % Положение источника возбуждения
-sourcePos = 50;
+sourcePos = 100;
 
 Ez = zeros (1, maxSize);
 Hy = zeros (size (Ez));
@@ -44,6 +44,7 @@ for t = 1: maxTime
 
     % Источник возбуждения
     Ez(sourcePos) = Ez(sourcePos) + exp (-(t - 30.0) ^ 2 / 100.0);
+    Hy(sourcePos) = Hy(sourcePos) - exp (-(t - 30.0) ^ 2 / 100.0) / W0;
     
     % Регистрация поля в точке
     probeTimeEz(t) = Ez(probePos);

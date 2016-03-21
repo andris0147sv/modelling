@@ -1,10 +1,10 @@
 %% Расчет спектра дифференцированного гауссова импульса
 
 % Размер массива
-size = 64;
+size = 512;
 
 % шаг по времени
-dt = 1e-10;
+dt = 0.2e-10;
 
 A_max = 100;
 F_max = 3e9;
@@ -29,6 +29,7 @@ freq = (-size / 2:size / 2 - 1) * df;
 % Отображение импульса
 subplot (1, 2, 1)
 plot (time, gauss)
+xlim ([0, 0.4e-8]);
 grid on
 xlabel ('Время, с')
 ylabel ('Ez')
@@ -39,4 +40,5 @@ plot (freq, abs (spectrum))
 grid on
 xlabel ('Частота, Гц')
 ylabel ('|P|')
+xlim ([0, 5e9]);
 set(gca,'XTick',[-5e9: 1e9: 5e9])

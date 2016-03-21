@@ -1,26 +1,28 @@
-%% Расчет спектра вейвлета Рикера
-clear
+%% Расчет спектра модулированного гауссова импульса
 
 % Размер массива
 size = 1024;
 
 % шаг по времени
-dt = 0.2e-10;
+dt = 0.1e-10;
+
+A_0 = 10;
+A_max = 100;
+f_0 = 5e9;
+DeltaF = 4e9;
 
 % Шаг по частоте
 df = 1.0 / (size * dt);
 
-fp = 1e9;
-Md = 2;
-dr = Md / fp;
+w_g = 2 * sqrt(log(A_max)) / (pi * DeltaF);
+d_g = w_g * log (A_0);
 
-% Вейвлет Рикера
-time = (1:size) * dt;
-impulse = (1 - 2 * (pi * fp * (time - dr)) .^ 2) .*...
-    exp (-(pi * fp * (time - dr)) .^ 2);
+% Гауссов импульс
+time = (0:size - 1) * dt;
+gauss = sin (2 * pi * f_0 * time) .* exp (-((time - d_g) / w_g) .^ 2);
 
 % Расчет спектра
-spectrum = fft(impulse);
+spectrum = fft(gauss);
 spectrum = fftshift (spectrum);
 
 % Расчет частоты
@@ -28,7 +30,7 @@ freq = (-size / 2:size / 2 - 1) * df;
 
 % Отображение импульса
 subplot (1, 2, 1)
-plot (time, impulse)
+plot (time, gauss)
 xlim ([0, 0.4e-8]);
 grid on
 xlabel ('Время, с')
@@ -40,5 +42,5 @@ plot (freq, abs (spectrum))
 grid on
 xlabel ('Частота, Гц')
 ylabel ('|P|')
-xlim ([0, 5e9]);
-set(gca,'XTick',[-5e9: 1e9: 5e9])
+xlim ([0, 10e9]);
+set(gca,'XTick',[0: 2e9: 15e9])
