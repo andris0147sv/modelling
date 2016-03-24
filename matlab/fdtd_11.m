@@ -23,7 +23,7 @@ probePos = 50;
 
 layer_x = 100;
 
-Sc = 1;
+Sc = 1.0;
 Np = 30;
 Md = 2;
 
@@ -58,7 +58,7 @@ for t = 1: maxTime
         % До этой строки Hy(n) хранит значение компоненты Hy
         % за предыдущий момент времени
         Hy(m) = chyh(m) * Hy(m) +...
-            chye(m) * (Ez(m + 1) - Ez(m));
+            chye(m) * (Ez(m + 1) - Ez(m)) * Sc;
     end
     
     Hy(49) = Hy(49) - (1 - 2 * pi ^ 2 * (Sc * t / Np - Md) ^ 2) *...
@@ -72,13 +72,13 @@ for t = 1: maxTime
         % за предыдущий момент времени
         % Вместо W0 / eps используется cezh
         Ez(m) = ceze(m) * Ez(m) + ...
-            cezh(m) * (Hy(m) - Hy(m - 1));
+            cezh(m) * (Hy(m) - Hy(m - 1)) * Sc;
     end
 
     % Источник возбуждения
     Ez(50) = Ez(50) +...
-        (1 - 2 * pi ^ 2 * ((Sc * t + 1) / Np - Md) ^ 2) *...
-        exp (-pi ^ 2 * ((Sc * t + 1) / Np - Md) ^ 2);
+        (1 - 2 * pi ^ 2 * ((Sc * (t + 0.5) - (-0.5)) / Np - Md) ^ 2) *...
+        exp (-pi ^ 2 * ((Sc * (t + 0.5) - (-0.5)) / Np - Md) ^ 2);
     
     % Регистрация поля в точке
     probeTimeEz(t) = Ez(probePos);
