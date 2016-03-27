@@ -6,24 +6,24 @@ clear
 W0 = 120 * pi;
 
 % Время расчета в отсчетах
-maxTime = 450;
+maxTime = 550;
 
 % Размер области моделирования в отсчетах
 maxSize = 200;
 
-% Положение датчика, регистрирующего поля
+% Положение датчика, регистрирующего поля в отсчетах
 probePos = 60;
 
-% Положение источника возбуждения
+% Положение источника возбуждения в отсчетах
 sourcePos = 50;
 
+% Положение начала диэлектрика
 layer_x = 100;
 
 Ez = zeros (1, maxSize);
 Hy = zeros (1, maxSize);
 
 eps = ones (1, maxSize);
-%eps(layer_x: end) = 9.0;
 eps(layer_x: 120) = 9.0;
 
 mu = ones (1, maxSize);
@@ -39,7 +39,7 @@ for t = 1: maxTime
     for m = 1: maxSize - 1
         % До этой строки Hy(n) хранит значение компоненты Hy
         % за предыдущий момент времени
-        Hy(m) = Hy(m) + (Ez(m + 1) - Ez(m)) / W0 / mu(m);
+        Hy(m) = Hy(m) + (Ez(m + 1) - Ez(m)) / (W0 * mu(m));
     end
     
     Hy(sourcePos - 1) = Hy(sourcePos - 1) - exp (-(t - 30.0) ^ 2 / 100.0) / W0;
