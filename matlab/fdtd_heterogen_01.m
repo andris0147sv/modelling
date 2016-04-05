@@ -24,7 +24,7 @@ Ez = zeros (1, maxSize);
 Hy = zeros (1, maxSize);
 
 eps = ones (1, maxSize);
-eps(layer_x: 120) = 9.0;
+eps(layer_x: end) = 9.0;
 
 mu = ones (1, maxSize);
 

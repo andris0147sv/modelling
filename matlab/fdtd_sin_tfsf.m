@@ -1,12 +1,12 @@
-%% Одномерный FDTD. Версия 1.4.1
-% Граница раздела. Hy имеет на одну ячейку меньше.
+%% Одномерный FDTD. Версия 1.3
+% Модулированный гауссов импульс распространяется в одну сторону (TFSF boundary)
 clear
 
 % Волновое сопротивление свободного пространства
 W0 = 120 * pi;
 
 % Время расчета в отсчетах
-maxTime = 450;
+maxTime = 250;
 
 % Размер области моделирования в отсчетах
 maxSize = 200;
@@ -17,16 +17,14 @@ probePos = 60;
 % Положение источника возбуждения
 sourcePos = 50;
 
-% Положение начала диэлектрика
-layer_x = 100;
+% Параметры для гармонического сигнала
+Nl = 30;
+
+phi_0 = 0;
+%phi_0 = 2 * pi / Nl;
 
 Ez = zeros (1, maxSize);
-Hy = zeros (1, maxSize - 1);
-
-eps = ones (size (Ez));
-eps(layer_x: end) = 9.0;
-
-mu = ones (size (Hy));
+Hy = zeros (1, maxSize);
 
 % Поле, зарегистрированное в датчике в зависимости от времени
 probeTimeEz = zeros (1, maxTime);
@@ -35,26 +33,27 @@ figure
 
 for t = 1: maxTime
     % Расчет компоненты поля H
+    Hy(maxSize) = Hy(maxSize - 1);
     for m = 1: maxSize - 1
-        % До этой строки Hy(m) хранит значение компоненты Hy
+        % До этой строки Hy(n) хранит значение компоненты Hy
         % за предыдущий момент времени
-        Hy(m) = Hy(m) + (Ez(m + 1) - Ez(m)) / W0 / mu(m);
+        Hy(m) = Hy(m) + (Ez(m + 1) - Ez(m)) / W0;
     end
     
-    Hy(sourcePos - 1) = Hy(sourcePos - 1) - exp (-(t - 30.0) ^ 2 / 100.0) / W0;
+    Hy(sourcePos - 1) = Hy(sourcePos - 1) -...
+        sin (2 * pi * t / Nl - phi_0) / W0;
     
     % Расчет компоненты поля E
     Ez(1) = Ez(2);
-    Ez(maxSize) = Ez(maxSize - 1);
-    
-    for m = 2: maxSize - 1
-        % До этой строки Ez(m) хранит значение компоненты Ez
+    for m = 2: maxSize
+        % До этой строки Ez(n) хранит значение компоненты EzS
         % за предыдущий момент времени
-        Ez(m) = Ez(m) + (Hy(m) - Hy(m - 1)) * W0 / eps (m);
+        Ez(m) = Ez(m) + (Hy(m) - Hy(m - 1)) * W0;
     end
 
     % Источник возбуждения
-    Ez(sourcePos) = Ez(sourcePos) + exp (-(t + 0.5 - (-0.5) - 30.0) ^ 2 / 100.0);
+    Ez(sourcePos) = Ez(sourcePos) +...
+        sin (2 * pi * (t + 0.5 - (-0.5)) / Nl - phi_0);
     
     % Регистрация поля в точке
     probeTimeEz(t) = Ez(probePos);
@@ -64,8 +63,6 @@ for t = 1: maxTime
     ylim ([-1.1, 1.1]);
     xlabel ('x, отсчет')
     ylabel ('Ez, В/м')
-    line ([layer_x, layer_x], [-1.1, 1.1], ...
-        'Color',[0.0, 0.0, 0.0]);
     grid on
     hold on
     plot ([probePos], [0], 'xk');
@@ -78,4 +75,5 @@ figure
 plot (probeTimeEz)
 xlabel ('t, отсчет')
 ylabel ('Ez, В/м')
+ylim ([-1.1, 1.1]);
 grid on

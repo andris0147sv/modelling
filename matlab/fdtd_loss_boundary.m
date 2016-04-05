@@ -7,10 +7,10 @@ clear
 W0 = 120 * pi;
 
 % Потери в среде. loss = sigma * dt / (2 * eps * eps0)
-loss = 0.02;
+loss = 0.01;
 
 % Где начинается поглощающий диэлектрик
-layer_loss_x = 180;
+layer_loss_x = 160;
 
 % Время расчета в отсчетах
 maxTime = 750;

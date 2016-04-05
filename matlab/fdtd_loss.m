@@ -9,7 +9,7 @@ W0 = 120 * pi;
 loss = 0.01;
 
 % Время расчета в отсчетах
-maxTime = 450;
+maxTime = 1000;
 
 % Размер области моделирования в отсчетах
 maxSize = 200;
@@ -73,6 +73,7 @@ for t = 1: maxTime
     ylabel ('Ez, В/м')
     line ([layer_x, layer_x], [-1.1, 1.1], ...
         'Color',[0.0, 0.0, 0.0]);
+    grid on
     pause (0.01)
 end
 
