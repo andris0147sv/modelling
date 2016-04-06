@@ -18,6 +18,7 @@ maxSize = 200;
 probePos = 160;
 
 layer_x = 100;
+sourcePos = 50;
 
 Ez = zeros (1, maxSize);
 Hy = zeros (1, maxSize - 1);
@@ -56,7 +57,8 @@ for t = 1: maxTime
         Hy(m) = Hy(m) + (Ez(m + 1) - Ez(m)) / W0 / mu(m);
     end
     
-    Hy(49) = Hy(49) - exp (-(t - 30.0) ^ 2 / 100.0) / W0;
+    Hy(sourcePos - 1) = Hy(sourcePos - 1) -...
+        exp (-(t - 30.0) ^ 2 / 100.0) / W0;
     
     % Расчет компоненты поля E
   
@@ -67,7 +69,8 @@ for t = 1: maxTime
     end
 
     % Источник возбуждения
-    Ez(50) = Ez(50) + exp (-(t + 0.5 - (-0.5) - 30.0) ^ 2 / 100.0);
+    Ez(sourcePos) = Ez(sourcePos) +...
+        exp (-(t + 0.5 - (-0.5) - 30.0) ^ 2 / 100.0);
     
     % Граничные условия ABC первой степени
     Ez(1) = oldEzLeft + koeffABCLeft * (Ez(2) - Ez(1));
@@ -86,6 +89,11 @@ for t = 1: maxTime
     ylabel ('Ez, В/м')
     line ([layer_x, layer_x], [-1.1, 1.1], ...
         'Color',[0.0, 0.0, 0.0]);
+    grid on
+    hold on
+    plot ([probePos], [0], 'xk');
+    plot ([sourcePos], [0], '*r');
+    hold off
     pause (0.01)
 end
 
