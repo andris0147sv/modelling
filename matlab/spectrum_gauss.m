@@ -6,7 +6,7 @@ size = 1024;
 % шаг по времени
 dt = 0.2e-10;
 
-A_0 = 100;
+A_0 = 1000;
 A_max = 100;
 F_max = 2e9;
 
@@ -14,7 +14,7 @@ F_max = 2e9;
 df = 1.0 / (size * dt);
 
 w_g = sqrt(log(A_max)) / (pi * F_max);
-d_g = w_g * log (A_0);
+d_g = w_g * sqrt(log (A_0));
 
 % Гауссов импульс
 time = (0:size - 1) * dt;

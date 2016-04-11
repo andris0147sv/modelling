@@ -18,8 +18,11 @@ maxTime = 750;
 % Размер области моделирования в отсчетах
 maxSize = 200;
 
+% Положение источника
+sourcePos = 50;
+
 % Положение датчика, регистрирующего поля
-probePos = 50;
+probePos = 60;
 
 % Начало диэлектрического слоя
 layer_x = 100;
@@ -58,7 +61,8 @@ for t = 1: maxTime
             chye(m) * (Ez(m + 1) - Ez(m));
     end
     
-    Hy(49) = Hy(49) - exp (-(t - 30.0) ^ 2 / 100.0) / W0;
+    Hy(sourcePos - 1) = Hy(sourcePos - 1) -...
+        exp (-(t - 30.0) ^ 2 / 100.0) / W0;
     
     % Расчет компоненты поля E
     Ez(1) = Ez(2);
@@ -72,7 +76,8 @@ for t = 1: maxTime
     end
 
     % Источник возбуждения
-    Ez(50) = Ez(50) + exp (-(t + 0.5 - (-0.5) - 30.0) ^ 2 / 100.0);
+    Ez(sourcePos) = Ez(sourcePos) +...
+        exp (-(t + 0.5 - (-0.5) - 30.0) ^ 2 / 100.0);
     
     % Регистрация поля в точке
     probeTimeEz(t) = Ez(probePos);
@@ -86,6 +91,11 @@ for t = 1: maxTime
         'Color',[0.0, 0.0, 0.0]);
     line ([layer_loss_x, layer_loss_x], [-1.1, 1.1], ...
         'Color',[0.0, 0.0, 0.0]);
+    grid on
+    hold on
+    plot ([probePos], [0], 'xk');
+    plot ([sourcePos], [0], '*r');
+    hold off
     pause (0.01)
 end
 
