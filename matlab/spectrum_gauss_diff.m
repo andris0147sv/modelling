@@ -7,7 +7,7 @@ size = 512;
 dt = 0.2e-10;
 
 A_max = 100;
-F_max = 2e9;
+F_max = 5e9;
 
 % Шаг по частоте
 df = 1.0 / (size * dt);
