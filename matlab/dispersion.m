@@ -14,13 +14,16 @@ function dispersion
         ratio = abs (getDispersionRatio (Sc, Nl, eps, mu));
 
         plot (Nl, ratio);
-        grid on
-        
     end
     
     grid on
     legend (legends, 'Location','southeast');
     ylim ([0.6, 1.05])
+    xlabel ('$$N_\lambda$$', 'Interpreter','latex', 'FontSize', 14)
+    ylabel ('$${\widetilde{c}} \over c$$',...
+        'Interpreter','latex',...
+        'Rotation', 0,...
+        'FontSize', 14)
     hold off
 end
 
