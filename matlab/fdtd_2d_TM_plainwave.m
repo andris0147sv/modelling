@@ -87,8 +87,8 @@ Cezh = 1 ./ (1 + (sigma .* dt ./ (2 * eps * eps0))) .*...
     dt ./ (eps * eps0 * d);
 
 %% Компоненты поля
-Hx = zeros (sizeX, sizeY);
-Hy = zeros (sizeX, sizeY);
+Hx = zeros (sizeX, sizeY - 1);
+Hy = zeros (sizeX - 1, sizeY);
 
 Ez = zeros (sizeX, sizeY);
 
@@ -127,7 +127,7 @@ for t = 1: maxTime
     %shading interp;
 
     imagesc(Ez', [-1, 1]);
-    colormap jet;
+    colormap gray;
     
     zlim([-1.1, 1.1])
     pause (0.01);
