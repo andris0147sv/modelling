@@ -21,7 +21,7 @@ sourcePos = 50;
 Nl = 30;
 
 %phi_0 = 0;
-phi_0 = 2 * pi / Nl;
+phi_0 = -2 * pi / Nl;
 
 Ez = zeros (1, maxSize);
 Hy = zeros (1, maxSize - 1);
@@ -41,7 +41,7 @@ for t = 1: maxTime
     end
     
     Hy(sourcePos - 1) = Hy(sourcePos - 1) -...
-        sin (2 * pi * t / Nl - phi_0) / W0;
+        sin (2 * pi * t / Nl + phi_0) / W0;
     
     % Расчет компоненты поля E
     Ez(1) = Ez(2);
@@ -54,7 +54,7 @@ for t = 1: maxTime
 
     % Источник возбуждения
     Ez(sourcePos) = Ez(sourcePos) +...
-        sin (2 * pi * (t + 0.5 - (-0.5)) / Nl - phi_0);
+        sin (2 * pi * (t + 0.5 - (-0.5)) / Nl + phi_0);
     
     % Регистрация поля в точке
     probeTimeEz(t) = Ez(probePos);
