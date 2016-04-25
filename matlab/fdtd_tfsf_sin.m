@@ -15,13 +15,13 @@ maxSize = 200;
 probePos = 60;
 
 % Положение источника возбуждения
-sourcePos = 50;
+sourcePos = 20;
 
 % Параметры для гармонического сигнала
 Nl = 30;
 
-%phi_0 = 0;
-phi_0 = -2 * pi / Nl;
+phi_0 = 0;
+%phi_0 = -2 * pi / Nl;
 
 Ez = zeros (1, maxSize);
 Hy = zeros (1, maxSize - 1);

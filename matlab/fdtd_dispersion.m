@@ -17,7 +17,7 @@ probePos = 60;
 % Положение источника возбуждения
 sourcePos = 50;
 
-Sc = 1;
+Sc = 1.0;
 
 Ez = zeros (1, maxSize);
 Hy = zeros (1, maxSize);

@@ -15,7 +15,7 @@ Md = 2;
 dr = Md / fp;
 
 % Вейвлет Рикера
-time = (1:size) * dt;
+time = (0:size - 1) * dt;
 impulse = (1 - 2 * (pi * fp * (time - dr)) .^ 2) .*...
     exp (-(pi * fp * (time - dr)) .^ 2);
 
