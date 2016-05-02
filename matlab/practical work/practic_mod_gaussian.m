@@ -10,12 +10,12 @@ clc
 dx = 1 * 1e-3;
 
 % Размер области моделирования в метрах
-maxSize_m = 0.4;
+maxSize_m = 1.0;
 
 % Время моделирования в секундах
-maxTime_sec = 12e-9;
+maxTime_sec = 15e-9;
 
-layers_begin = [0.2, 0.3];
+layers_begin = [0.8, 0.9];
 layers_eps = [9.0, 3.0];
 layers_mu = [1.0, 1.0];
 layers_sigma = [0.0, 0.0];
@@ -33,10 +33,10 @@ fmax = 5e9;
 Sc = 1.0;
 
 % Интервал обновления анимации
-speed = 5;
+speed = 20;
 
 % Окончание падающего сигнала, в секундах
-inc_time_s = 1.0e-9;
+inc_time_s = 2.0e-9;
 
 
 % ********************
@@ -58,11 +58,24 @@ W0 = 120 * pi;
 % Временной шаг в секундах
 dt = Sc * dx / c;
 
-% Расчет параметров импульса
-fp = (fmax + fmin) / 2;
-Md = 2;
-dr = Md / fp;
-Np = (dr * Sc) / (Md * dt);
+% Расчет параметров импульса (вейвлет Рикера)
+% fp = (fmax + fmin) / 2;
+% Md = 2;
+% dr = Md / fp;
+% Np = (dr * Sc) / (Md * dt);
+
+% Расчет параметров импульса (модулированный гауссов сигнал)
+f0 = (fmax + fmin) / 2;
+Amax = 10;
+A0 = 1000;
+df = fmax - fmin;
+
+wg = 2 * sqrt (log (Amax)) / (pi * df);
+dg = wg * sqrt (log (A0));
+
+N0 = Sc / (f0 * dt);
+Nd = dg / dt;
+Nw = wg / dt;
 
 % Расчет "дискретных" параметров
 % Время расчета в отсчетах
@@ -158,7 +171,9 @@ for t = 0: maxTime
         Hy(m) = Hy(m) + (Ez(m + 1) - Ez(m)) / W0 / mu(m);
     end
     
-    Hy(port_x - 1) = Hy(port_x - 1) - ricker_1d (0, t, Sc, Np, Md) / W0;
+    % Hy(port_x - 1) = Hy(port_x - 1) - ricker_1d (0, t, Sc, Np, Md) / W0;
+    Hy(port_x - 1) = Hy(port_x - 1) - ...
+        gaussian_mod (0, t, Sc, N0, Nd, Nw) / W0;
     
     % Расчет компоненты поля E
     for m = 2: maxSize - 1
@@ -168,7 +183,9 @@ for t = 0: maxTime
     end
 
     % Источник возбуждения
-    Ez(port_x) = Ez(port_x) + ricker_1d (0.5, t + 0.5, Sc, Np, Md);
+    %Ez(port_x) = Ez(port_x) + ricker_1d (0.5, t + 0.5, Sc, Np, Md);
+    
+    Ez(port_x) = Ez(port_x) + gaussian_mod (0.5, t + 0.5, Sc, N0, Nd, Nw);
     
     % Граничные условия ABC второй степени (слева)
     Ez(1) = k1Left * (k2Left * (Ez(3) + oldEzLeft2(1)) +...
