@@ -128,7 +128,7 @@ for t = 1: maxTime
     %shading interp;
 
     imagesc(Ez', [-1, 1]);
-    colormap jet;
+    colormap gray;
     
     zlim([-1.1, 1.1])
     pause (0.01);

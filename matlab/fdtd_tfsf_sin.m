@@ -20,8 +20,8 @@ sourcePos = 20;
 % Параметры для гармонического сигнала
 Nl = 30;
 
-phi_0 = 0;
-%phi_0 = -2 * pi / Nl;
+%phi_0 = 0;
+phi_0 = -2 * pi / Nl;
 
 Ez = zeros (1, maxSize);
 Hy = zeros (1, maxSize - 1);
@@ -45,7 +45,7 @@ for t = 1: maxTime
     
     % Расчет компоненты поля E
     Ez(1) = Ez(2);
-    Ez(end) = Ez(end-1);
+    %Ez(end) = Ez(end-1);
     for m = 2: maxSize - 1
         % До этой строки Ez(n) хранит значение компоненты EzS
         % за предыдущий момент времени
