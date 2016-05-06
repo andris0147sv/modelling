@@ -98,10 +98,11 @@ end
 Ez = zeros (1, maxSize);
 Hy = zeros (1, maxSize - 1);
 
-eps = ones (size (Ez));
-mu = ones (size (Ez));
-sigma = zeros (size (Ez));
+eps = ones (1, size (Ez));
+mu = ones (1, size (Ez));
+sigma = zeros (1, size (Ez));
 
+% Создание слоев
 layers_count = size(layers_begin, 2);
 for n = 1:layers_count
     begin = ceil(layers_begin(n) / dx) + 1;
