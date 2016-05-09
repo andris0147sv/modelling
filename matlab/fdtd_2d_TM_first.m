@@ -32,7 +32,6 @@ eps0 = 8.854187817e-12;
 % Скорость света в вакууме
 c = 1.0 / sqrt (mu0 * eps0);
 
-
 %% Расчет "дискретных" параметров моделирования
 % "Одномерный" аналог числа Куранта для случая 2D
 Cdtds = 1.0 / sqrt (2.0);
@@ -55,6 +54,12 @@ port_y = ceil (port_y_m / d);
 
 gauss_width = gauss_width_sec / dt;
 gauss_delay = gauss_delay_sec / dt;
+
+
+%% Компоненты поля
+Hx = zeros (sizeX, sizeY - 1);
+Hy = zeros (sizeX - 1, sizeY);
+Ez = zeros (sizeX, sizeY);
 
 
 %% Параметры среды
@@ -87,14 +92,10 @@ Ceze = (1 - sigma .* dt ./ (2 * eps * eps0)) ./ ...
 Cezh = 1 ./ (1 + (sigma .* dt ./ (2 * eps * eps0))) .*...
     dt ./ (eps * eps0 * d);
 
-%% Компоненты поля
-Hx = zeros (sizeX, sizeY);
-Hy = zeros (sizeX, sizeY);
 
-Ez = zeros (sizeX, sizeY);
-
+%% Подготовка к визуализации двумерного поля
 figure;
-[x, y] = meshgrid (1:sizeX, 1:sizeY);
+[x, y] = meshgrid (1:size(Ez, 1), 1:size(Ez, 2));
 x = x';
 y = y';
 
