@@ -1,5 +1,5 @@
-%% Двумерный FDTD. Версия 1.0.1
-% Не используются граничные условия
+%% Двумерный FDTD.
+% Граничные условия ABC второй степени.
 % Плоская волна
 clear
 clc
@@ -22,6 +22,7 @@ port_x_m = 0.1;
 gauss_width_sec = 2e-11;
 gauss_delay_sec = 2.5 * gauss_width_sec;
 
+
 %% Физические константы
 % Магнитная постоянная
 mu0 = pi * 4e-7;
@@ -37,7 +38,7 @@ c = 1.0 / sqrt (mu0 * eps0);
 % "Одномерный" аналог числа Куранта для случая 2D
 Cdtds = 1.0 / sqrt (2.0);
 
-dt = d / (c) * Cdtds;
+dt = d / c * Cdtds;
 
 % Волновое сопротивление свободного пространства
 W0 = 120 * pi;
@@ -54,6 +55,11 @@ port_x = ceil (port_x_m / d);
 
 gauss_width = gauss_width_sec / dt;
 gauss_delay = gauss_delay_sec / dt;
+
+%% Компоненты поля
+Hx = zeros (sizeX, sizeY - 1);
+Hy = zeros (sizeX - 1, sizeY);
+Ez = zeros (sizeX, sizeY);
 
 
 %% Параметры среды
@@ -104,12 +110,6 @@ EzRight = zeros (2, 3, sizeY);
 EzTop = zeros (2, sizeX, 3);
 EzBottom = zeros (2, sizeX, 3);
 
-%% Компоненты поля
-Hx = zeros (sizeX, sizeY);
-Hy = zeros (sizeX, sizeY);
-
-Ez = zeros (sizeX, sizeY);
-
 figure;
 [x, y] = meshgrid (1:sizeX, 1:sizeY);
 x = x';
@@ -120,29 +120,31 @@ for t = 1: maxTime
     for m = 1:sizeX
         for n = 1:sizeY - 1
             Hx(m, n) = Chxh(m, n) * Hx(m, n) -...
-                Chxe(m, n) * (Ez(m, n + 1) - Ez(m, n));
+                       Chxe(m, n) * (Ez(m, n + 1) - Ez(m, n));
         end
     end
 
     for m = 1:sizeX - 1
         for n = 1:sizeY
             Hy(m, n) = Chyh(m, n) * Hy(m, n) +...
-                Chye(m, n) * (Ez(m + 1, n) - Ez(m, n));
+                       Chye(m, n) * (Ez(m + 1, n) - Ez(m, n));
         end
     end
 
     for m = 2:sizeX - 1
         for n = 2:sizeY - 1
             Ez(m, n) = Ceze(m, n) * Ez(m, n) +...
-                Cezh(m, n) * ((Hy(m, n) - Hy(m - 1, n)) -...
-                (Hx(m, n) - Hx(m, n-1)));
+                       Cezh(m, n) * ((Hy(m, n) - Hy(m - 1, n)) -...
+                                    (Hx(m, n) - Hx(m, n-1)));
         end
     end
     
+    % Вертикальная плоская волна
     Ez(port_x, 2:end-1) = Ez(port_x, 2:end-1) +...
         exp (-(t - gauss_delay) ^ 2 / (gauss_width ^ 2));
     
-    %Ez(2:end-1, port_x) = Ez(2:end-1, port_x) +...
+    % Горизонтальная плоская волна
+    % Ez(2:end-1, port_x) = Ez(2:end-1, port_x) +...
     %    exp (-(t - gauss_delay) ^ 2 / (gauss_width ^ 2));
     
     % Граничное условие слева

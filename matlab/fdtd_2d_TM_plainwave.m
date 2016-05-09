@@ -37,7 +37,7 @@ c = 1.0 / sqrt (mu0 * eps0);
 % "Одномерный" аналог числа Куранта для случая 2D
 Cdtds = 1.0 / sqrt (2.0);
 
-dt = d / (c) * Cdtds;
+dt = d / c * Cdtds;
 
 % Волновое сопротивление свободного пространства
 W0 = 120 * pi;
@@ -54,6 +54,11 @@ port_x = ceil (port_x_m / d);
 
 gauss_width = gauss_width_sec / dt;
 gauss_delay = gauss_delay_sec / dt;
+
+%% Компоненты поля
+Hx = zeros (sizeX, sizeY - 1);
+Hy = zeros (sizeX - 1, sizeY);
+Ez = zeros (sizeX, sizeY);
 
 
 %% Параметры среды
@@ -86,11 +91,6 @@ Ceze = (1 - sigma .* dt ./ (2 * eps * eps0)) ./ ...
 Cezh = 1 ./ (1 + (sigma .* dt ./ (2 * eps * eps0))) .*...
     dt ./ (eps * eps0 * d);
 
-%% Компоненты поля
-Hx = zeros (sizeX, sizeY - 1);
-Hy = zeros (sizeX - 1, sizeY);
-
-Ez = zeros (sizeX, sizeY);
 
 figure;
 [x, y] = meshgrid (1:sizeX, 1:sizeY);
@@ -102,14 +102,14 @@ for t = 1: maxTime
     for m = 1:sizeX
         for n = 1:sizeY - 1
             Hx(m, n) = Chxh(m, n) * Hx(m, n) -...
-                Chxe(m, n) * (Ez(m, n + 1) - Ez(m, n));
+                       Chxe(m, n) * (Ez(m, n + 1) - Ez(m, n));
         end
     end
 
     for m = 1:sizeX - 1
         for n = 1:sizeY
             Hy(m, n) = Chyh(m, n) * Hy(m, n) +...
-                Chye(m, n) * (Ez(m + 1, n) - Ez(m, n));
+                       Chye(m, n) * (Ez(m + 1, n) - Ez(m, n));
         end
     end
 
@@ -121,7 +121,8 @@ for t = 1: maxTime
         end
     end
     
-    Ez(port_x, 2:end-1) = Ez(port_x, 2:end-1) + exp (-(t - gauss_delay) ^ 2 / (gauss_width ^ 2));
+    Ez(port_x, 2:end-1) = Ez(port_x, 2:end-1) +...
+        exp (-(t - gauss_delay) ^ 2 / (gauss_width ^ 2));
     
     %surfl(x, y, Ez);
     %shading interp;
