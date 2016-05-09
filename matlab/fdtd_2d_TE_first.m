@@ -1,5 +1,5 @@
 %% Двумерный FDTD. Версия 1.0
-% Поляризация TMz. Граничные условия - PEC
+% Поляризация TEz. Граничные условия - PEC
 clear
 clc
 
@@ -56,6 +56,11 @@ port_y = ceil (port_y_m / d);
 gauss_width = gauss_width_sec / dt;
 gauss_delay = gauss_delay_sec / dt;
 
+%% Компоненты поля
+Ex = zeros (sizeX - 1, sizeY);
+Ey = zeros (sizeX, sizeY - 1);
+Hz = zeros (sizeX - 1, sizeY - 1);
+
 
 %% Параметры среды
 % Диэлектрическая проницаемость среды
@@ -71,65 +76,64 @@ sigma = zeros (sizeX, sizeY);
 sigma_m = zeros (sizeX, sizeY);
 
 %% Коэффициенты для конечно-разностной схемы
-Chxh = (1 - sigma_m .* dt ./ (2 * mu * mu0)) ./ ...
-    (1 + sigma_m .* dt ./ (2 * mu * mu0));
+loss_m = sigma_m .* dt ./ (2 * mu * mu0);
+loss = sigma .* dt ./ (2 * eps * eps0);
 
-Chxe = 1 ./ (1 + (sigma_m .* dt ./ (2 * mu * mu0))) .*...
-    dt ./ (mu * mu0 * d);
+Chzh = (1 - loss_m) ./ (1 + loss_m);
 
-Chyh = Chxh;
+Chze = 1 ./ (1 + loss_m) .* (dt ./ (mu * mu0 * d));
 
-Chye = Chxe;
+Cexe = (1 - loss) ./ (1 + loss);
 
-Ceze = (1 - sigma .* dt ./ (2 * eps * eps0)) ./ ...
-    (1 + sigma .* dt ./ (2 * eps * eps0));
+Cexh = 1 ./ (1 + loss) .* (dt ./ (eps * eps0 * d));
 
-Cezh = 1 ./ (1 + (sigma .* dt ./ (2 * eps * eps0))) .*...
-    dt ./ (eps * eps0 * d);
+Ceye = Cexe;
+Ceyh = Cexh;
 
-%% Компоненты поля
-Hx = zeros (sizeX, sizeY);
-Hy = zeros (sizeX, sizeY);
 
-Ez = zeros (sizeX, sizeY);
+% Какую компоненту поля будем отображать
+visualize_field = Hz;
 
+%% Подготовка к визуализации двумерного поля
 figure;
-[x, y] = meshgrid (1:sizeX, 1:sizeY);
+[x, y] = meshgrid (size(visualize_field, 1), size(visualize_field, 2));
 x = x';
 y = y';
 
 %% Конечно-разностная схема
 for t = 1: maxTime        
-    for m = 1:sizeX
+    for m = 1:sizeX - 1
         for n = 1:sizeY - 1
-            Hx(m, n) = Chxh(m, n) * Hx(m, n) -...
-                Chxe(m, n) * (Ez(m, n + 1) - Ez(m, n));
+            Hz(m, n) = Chzh(m, n) * Hz(m, n) +...
+                       Chze(m, n) * (Ex(m, n + 1) - Ex(m, n) -...
+                                    (Ey(m + 1, n) - Ey(m, n)));
         end
     end
 
     for m = 1:sizeX - 1
-        for n = 1:sizeY
-            Hy(m, n) = Chyh(m, n) * Hy(m, n) +...
-                Chye(m, n) * (Ez(m + 1, n) - Ez(m, n));
+        for n = 2:sizeY - 1
+            Ex(m, n) = Cexe(m, n) * Ex(m, n) + ...
+                       Cexh(m, n) * (Hz(m, n) - Hz(m, n - 1));
         end
     end
 
     for m = 2:sizeX - 1
-        for n = 2:sizeY - 1
-            Ez(m, n) = Ceze(m, n) * Ez(m, n) +...
-                Cezh(m, n) * ((Hy(m, n) - Hy(m - 1, n)) -...
-                (Hx(m, n) - Hx(m, n-1)));
+        for n = 1:sizeY - 1
+            Ey(m, n) = Ceye(m, n) * Ey(m, n) - ...
+                       Ceyh(m, n) * (Hz(m, n) - Hz(m - 1, n));
         end
     end
     
-    Ez(port_x, port_y) = Ez(port_x, port_y) + exp (-(t - gauss_delay) ^ 2 / (gauss_width ^ 2));
+    Hz(port_x, port_y) = Hz(port_x, port_y) +...
+                         exp (-(t - gauss_delay) ^ 2 / (gauss_width ^ 2));
     
-    %surfl(x, y, Ez);
+    %surfl(x, y, Ex);
     %shading interp;
 
-    imagesc(Ez', [-0.05, 0.05]);
-    %colormap gray;
+    imagesc(Hz', [-0.05, 0.05]);
+    % colormap gray;
     colormap jet;
+    
     
     zlim([-1.1, 1.1])
     pause (0.01);
