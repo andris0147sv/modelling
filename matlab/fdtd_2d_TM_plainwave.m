@@ -131,6 +131,6 @@ for t = 1: maxTime
     colormap gray;
     
     zlim([-1.1, 1.1])
-    pause (0.01);
+    pause (0.03);
 end
 

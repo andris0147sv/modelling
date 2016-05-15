@@ -92,7 +92,7 @@ Ceyh = Cexh;
 
 
 % Какую компоненту поля будем отображать
-visualize_field = Hz;
+visualize_field = Ey;
 
 %% Подготовка к визуализации двумерного поля
 figure;
@@ -130,12 +130,12 @@ for t = 1: maxTime
     %surfl(x, y, Ex);
     %shading interp;
 
-    imagesc(Hz', [-0.05, 0.05]);
+    imagesc(Ey', [-10, 10]);
     % colormap gray;
     colormap jet;
     
     
-    zlim([-1.1, 1.1])
-    pause (0.01);
+    zlim([-10, 10])
+    pause (0.04);
 end
 

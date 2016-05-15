@@ -123,7 +123,8 @@ for t = 1: maxTime
         end
     end
     
-    Ez(port_x, port_y) = Ez(port_x, port_y) + exp (-(t - gauss_delay) ^ 2 / (gauss_width ^ 2));
+    Ez(port_x, port_y) = Ez(port_x, port_y) +...
+                         exp (-(t - gauss_delay) ^ 2 / (gauss_width ^ 2));
     
     %surfl(x, y, Ez);
     %shading interp;
@@ -132,7 +133,7 @@ for t = 1: maxTime
     %colormap gray;
     colormap jet;
     
-    zlim([-1.1, 1.1])
+    zlim([-0.05, 0.05])
     pause (0.01);
 end
 
