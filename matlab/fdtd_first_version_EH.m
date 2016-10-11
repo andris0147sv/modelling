@@ -56,7 +56,6 @@ for t = 1: maxTime
     plot ([probePos], [0], 'xk');
     hold off
     
-    
     subplot (2, 1, 2)
     plot (Hy, 'r');
     xlim ([1, maxSize]);
