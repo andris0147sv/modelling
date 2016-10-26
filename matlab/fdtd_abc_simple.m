@@ -27,7 +27,7 @@ figure
 
 for t = 1: maxTime
     % Расчет компоненты поля H
-    Hy(maxSize) = Hy(maxSize - 1);
+    Hy(end) = Hy(end - 1);
     for m = 1: maxSize - 1
         % До этой строки Hy(n) хранит значение компоненты Hy
         % за предыдущий момент времени
