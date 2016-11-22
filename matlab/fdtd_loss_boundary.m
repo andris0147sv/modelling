@@ -7,7 +7,7 @@ clear
 W0 = 120 * pi;
 
 % Потери в среде. loss = sigma * dt / (2 * eps * eps0)
-loss = 0.01;
+loss = 0.02;
 
 % Где начинается поглощающий диэлектрик
 layer_loss_x = 160;
