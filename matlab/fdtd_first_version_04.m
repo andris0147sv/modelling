@@ -1,5 +1,5 @@
-%% Одномерный FDTD. Версия 1.0.1
-% Добавлена анимация
+%% Одномерный FDTD. Версия 1.0.3
+% "Жесткий" источник в середине области моделирования
 clear
 
 % Волновое сопротивление свободного пространства
@@ -17,14 +17,11 @@ maxSize = 200;
 % Положение датчика, регистрирующего поля
 probePos = 50;
 
-% Начальные условия
+% Положение источника возбуждения
+sourcePos = 100;
+
 Ez = zeros (1, maxSize);
 Hy = zeros (size (Ez));
-
-% Значение компонент поля в предыдущий момент времени
-% Ez(q - 1), Hy(q - 1/2)
-Ez_prev = zeros (size (Ez));
-Hy_prev = zeros (size (Hy));
 
 % Поле, зарегистрированное в датчике в зависимости от времени
 probeTimeEz = zeros (1, maxTime);
@@ -32,21 +29,22 @@ probeTimeEz = zeros (1, maxTime);
 figure
 
 for t = 1: maxTime
-    Ez_prev = Ez;
-    Hy_prev = Hy;
-    
     % Расчет компоненты поля H
     for m = 1: maxSize - 1
-        Hy(m) = Hy_prev(m) + (Ez_prev(m + 1) - Ez_prev(m)) * Sc / W0;
+        % До этой строки Hy(n) хранит значение компоненты Hy
+        % за предыдущий момент времени
+        Hy(m) = Hy(m) + (Ez(m + 1) - Ez(m)) * Sc / W0;
     end
     
     % Расчет компоненты поля E
     for m = 2: maxSize
-        Ez(m) = Ez_prev(m) + (Hy(m) - Hy(m - 1)) * Sc * W0;
+        % До этой строки Ez(n) хранит значение компоненты Ez
+        % за предыдущий момент времени
+        Ez(m) = Ez(m) + (Hy(m) - Hy(m - 1)) * Sc * W0;
     end
 
     % Источник возбуждения
-    Ez(1) = exp (-(t - 30.0) ^ 2 / 100.0);
+    Ez(sourcePos) = exp (-(t - 30.0) ^ 2 / 100.0);
     
     % Регистрация поля в точке
     probeTimeEz(t) = Ez(probePos);
@@ -58,7 +56,13 @@ for t = 1: maxTime
     ylabel ('Ez, В/м')
     grid on
     
-    pause (0.01)
+    % Отметим положение источника и датчика
+    hold on
+    plot ([sourcePos], [0], '*r');
+    plot ([probePos], [0], 'xk');
+    hold off
+    
+    pause (0.02)
 end
 
 figure

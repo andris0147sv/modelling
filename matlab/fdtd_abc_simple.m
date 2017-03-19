@@ -54,6 +54,8 @@ for t = 1: maxTime
     xlabel ('x, отсчет')
     ylabel ('Ez, В/м')
     grid on
+    
+    % Отображение положения источника и датчика
     hold on
     plot ([probePos], [0], 'xk');
     plot ([sourcePos], [0], '*r');
