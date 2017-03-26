@@ -18,7 +18,7 @@ maxSize = 200;
 probePos = 50;
 
 % Положение источника возбуждения
-sourcePos = 100;
+sourcePos = 75;
 
 Ez = zeros (1, maxSize);
 Hy = zeros (size (Ez));

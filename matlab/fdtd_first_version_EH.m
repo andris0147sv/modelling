@@ -67,7 +67,7 @@ for t = 1: maxTime
     plot ([probePos], [0], 'xk');
     hold off
     
-    pause (0.01)
+    pause (0.03)
 end
 
 figure
