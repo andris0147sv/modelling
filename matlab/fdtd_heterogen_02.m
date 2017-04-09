@@ -6,7 +6,7 @@ clear
 W0 = 120 * pi;
 
 % Время расчета в отсчетах
-maxTime = 450;
+maxTime = 350;
 
 % Размер области моделирования в отсчетах
 maxSize = 200;
@@ -70,10 +70,10 @@ for t = 1: maxTime
         'Color',[0.0, 0.0, 0.0]);
     grid on
     hold on
-    plot ([probePos], [0], 'xk');
-    plot ([sourcePos], [0], '*r');
+    plot (probePos, 0, 'xk');
+    plot (sourcePos, 0, '*r');
     hold off
-    pause (0.01)
+    pause (0.05)
 end
 
 figure

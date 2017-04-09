@@ -120,10 +120,10 @@ for t = 1: maxTime
         'Color',[0.0, 0.0, 0.0]);
     grid on
     hold on
-    plot ([probePos], [0], 'xk');
-    plot ([sourcePos], [0], '*r');
+    plot (probePos, 0, 'xk');
+    plot (sourcePos, 0, '*r');
     hold off
-    pause (0.01)
+    pause (0.03)
 end
 
 figure

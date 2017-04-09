@@ -54,11 +54,11 @@ for t = 1: maxTime
     grid on
     
     hold on
-    plot ([probePos_1], [0], 'xk');
-    plot ([probePos_2], [0], 'xk');
+    plot (probePos_1, 0, 'xk');
+    plot (probePos_2, 0, 'xk');
     hold off
     
-    pause (0.01)
+    pause (0.03)
 end
 
 figure

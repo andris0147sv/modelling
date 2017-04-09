@@ -53,7 +53,7 @@ for t = 1: maxTime
     ylabel ('Ez, В/м')
     grid on
     hold on
-    plot ([probePos], [0], 'xk');
+    plot (probePos, 0, 'xk');
     hold off
     
     subplot (2, 1, 2)
@@ -64,7 +64,7 @@ for t = 1: maxTime
     ylabel ('Hy, А/м')
     grid on
     hold on
-    plot ([probePos], [0], 'xk');
+    plot (probePos, 0, 'xk');
     hold off
     
     pause (0.03)

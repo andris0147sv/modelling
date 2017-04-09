@@ -6,7 +6,7 @@ clear
 W0 = 120 * pi;
 
 % Время расчета в отсчетах
-maxTime = 450;
+maxTime = 350;
 
 % Размер области моделирования в отсчетах
 maxSize = 200;
@@ -34,8 +34,13 @@ for t = 1: maxTime
         Hy(m) = Hy(m) + (Ez(m + 1) - Ez(m)) / W0;
     end
     
+    % Источник возбуждения с использованием метода 
+    % Total Field / Scattered Field
     Hy(sourcePos - 1) = Hy(sourcePos - 1) - ...
-        exp (-(t - 30.0) ^ 2 / 100.0) / W0;
+      exp (-(t - 30.0) ^ 2 / 100.0) / W0;
+    
+    % Hy(sourcePos - 1) = Hy(sourcePos - 1) - ...
+    %  exp (-(t - 30.0 - 50) ^ 2 / 100.0) / W0;
     
     % Расчет компоненты поля E
     Ez(1) = Ez(2);
@@ -45,9 +50,13 @@ for t = 1: maxTime
         Ez(m) = Ez(m) + (Hy(m) - Hy(m - 1)) * W0;
     end
 
-    % Источник возбуждения
+    % Источник возбуждения с использованием метода 
+    % Total Field / Scattered Field
     Ez(sourcePos) = Ez(sourcePos) +...
-        exp (-(t + 0.5 - (-0.5) - 30.0) ^ 2 / 100.0);
+      exp (-(t + 0.5 - (-0.5) - 30.0) ^ 2 / 100.0);
+    
+    % Ez(sourcePos) = Ez(sourcePos) +...
+    %  exp (-(t + 0.5 - (50 - 0.5) - 30.0) ^ 2 / 100.0);
     
     % Регистрация поля в точке
     probeTimeEz(t) = Ez(probePos);
@@ -57,12 +66,13 @@ for t = 1: maxTime
     ylim ([-1.1, 1.1]);
     xlabel ('x, отсчет')
     ylabel ('Ez, В/м')
+    title (sprintf('%d', t))
     grid on
     hold on
-    plot ([probePos], [0], 'xk');
-    plot ([sourcePos], [0], '*r');
+    plot (probePos, 0, 'xk');
+    plot (sourcePos, 0, '*r');
     hold off
-    pause (0.01)
+    pause (0.03)
 end
 
 figure

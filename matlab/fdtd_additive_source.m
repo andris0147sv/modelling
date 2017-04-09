@@ -6,16 +6,16 @@ clear
 W0 = 120 * pi;
 
 % Время расчета в отсчетах
-maxTime = 450;
+maxTime = 1000;
 
 % Размер области моделирования в отсчетах
 maxSize = 200;
 
 % Положение датчика, регистрирующего поля
-probePos = 60;
+probePos = 50;
 
 % Положение источника возбуждения
-sourcePos = 50;
+sourcePos = 75;
 
 Ez = zeros (1, maxSize);
 Hy = zeros (1, maxSize);

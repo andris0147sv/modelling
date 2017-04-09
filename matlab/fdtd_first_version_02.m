@@ -58,7 +58,7 @@ for t = 1: maxTime
     ylabel ('Ez, В/м')
     grid on
     
-    pause (0.01)
+    pause (0.03)
 end
 
 figure

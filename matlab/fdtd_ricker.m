@@ -89,7 +89,7 @@ for t = 1: maxTime
         'Color',[0.0, 0.0, 0.0]);
     line ([layer_loss_x, layer_loss_x], [-1.1, 1.1], ...
         'Color',[0.0, 0.0, 0.0]);
-    pause (0.01)
+    pause (0.03)
 end
 
 figure

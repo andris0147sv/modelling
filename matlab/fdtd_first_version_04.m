@@ -58,11 +58,11 @@ for t = 1: maxTime
     
     % Отметим положение источника и датчика
     hold on
-    plot ([sourcePos], [0], '*r');
-    plot ([probePos], [0], 'xk');
+    plot (sourcePos, 0, '*r');
+    plot (probePos, 0, 'xk');
     hold off
     
-    pause (0.02)
+    pause (0.03)
 end
 
 figure

@@ -21,6 +21,9 @@ maxSize = 200;
 % Положение датчика, регистрирующего поля
 probePos = 50;
 
+% Положение источника возбуждения
+sourcePos = 50;
+
 layer_x = 100;
 
 Sc = 1.0;
@@ -61,7 +64,8 @@ for t = 1: maxTime
             chye(m) * (Ez(m + 1) - Ez(m)) * Sc;
     end
     
-    Hy(49) = Hy(49) - (1 - 2 * pi ^ 2 * (Sc * t / Np - Md) ^ 2) *...
+    Hy(sourcePos - 1) = Hy(sourcePos - 1) -...
+        (1 - 2 * pi ^ 2 * (Sc * t / Np - Md) ^ 2) *...
         exp (-pi ^ 2 * (Sc * t / Np - Md) ^ 2) / W0;
     
     % Расчет компоненты поля E
@@ -76,7 +80,7 @@ for t = 1: maxTime
     end
 
     % Источник возбуждения
-    Ez(50) = Ez(50) +...
+    Ez(sourcePos) = Ez(sourcePos) +...
         (1 - 2 * pi ^ 2 * ((Sc * (t + 0.5) - (-0.5)) / Np - Md) ^ 2) *...
         exp (-pi ^ 2 * ((Sc * (t + 0.5) - (-0.5)) / Np - Md) ^ 2);
     
@@ -92,6 +96,11 @@ for t = 1: maxTime
         'Color',[0.0, 0.0, 0.0]);
     line ([layer_loss_x, layer_loss_x], [-1.1, 1.1], ...
         'Color',[0.0, 0.0, 0.0]);
+    grid on
+    hold on
+    plot (probePos, 0, 'xk');
+    plot (sourcePos, 0, '*r');
+    hold off
     pause (0.03)
 end
 
