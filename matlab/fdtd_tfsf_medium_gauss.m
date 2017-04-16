@@ -1,39 +1,33 @@
-%% Одномерный FDTD. Версия 1.5
-% Среда с потерями.
+%% Одномерный FDTD. Версия 1.3.1
+% Гауссов импульс распространяется в одну сторону (TFSF boundary)
+% Источник находится в диэлектрике
 clear
 
 % Волновое сопротивление свободного пространства
 W0 = 120 * pi;
 
-% Потери в среде. loss = sigma * dt / (2 * eps * eps0)
-loss = 0.01;
+% Число Куранта
+Sc = 1;
 
 % Время расчета в отсчетах
-maxTime = 800;
+maxTime = 350;
 
 % Размер области моделирования в отсчетах
 maxSize = 200;
 
-% Положение источника
-sourcePos = 50;
-
-% Положение датчика для регистрации поля
+% Положение датчика, регистрирующего поля
 probePos = 60;
 
-% Начало слоя с потерями
-layer_x = 100;
+% Положение источника возбуждения
+sourcePos = 50;
 
 Ez = zeros (1, maxSize);
-Hy = zeros (1, maxSize - 1);
+Hy = zeros (1, maxSize);
 
 eps = ones (size (Ez));
-eps(layer_x: end) = 9.0;
+eps(1: end) = 9.0;
 
-ceze = ones (1, maxSize);
-ceze(layer_x: end) = (1 - loss) / (1 + loss);
-
-cezh = ones (1, maxSize) * W0 ./ eps;
-cezh(layer_x: end) = cezh(layer_x: end) / (1 + loss);
+mu = ones (size (Ez));
 
 % Поле, зарегистрированное в датчике в зависимости от времени
 probeTimeEz = zeros (1, maxTime);
@@ -45,38 +39,37 @@ for t = 1: maxTime
     for m = 1: maxSize - 1
         % До этой строки Hy(n) хранит значение компоненты Hy
         % за предыдущий момент времени
-        Hy(m) = Hy(m) + (Ez(m + 1) - Ez(m)) / W0;
+        Hy(m) = Hy(m) + (Ez(m + 1) - Ez(m)) / (W0 * mu(m)) * Sc;
     end
     
-    Hy(sourcePos - 1) = Hy(sourcePos - 1)...
-        - exp (-(t - 30.0) ^ 2 / 100.0) / W0;
+    % Источник возбуждения с использованием метода 
+    % Total Field / Scattered Field
+    Hy(sourcePos - 1) = Hy(sourcePos - 1) - ...
+      exp (-(t - 30.0) ^ 2 / 100.0) /...
+      (W0 / sqrt(eps(sourcePos - 1) / mu(sourcePos - 1)));
     
     % Расчет компоненты поля E
-    % Т.е. пока справа простейшее граничное условие и так не работает,
-    % правое граничное условие убрано.
-    Ez(1) = Ez(2);
-    
-    for m = 2: maxSize - 1
+    for m = 2: maxSize
         % До этой строки Ez(n) хранит значение компоненты EzS
         % за предыдущий момент времени
-        % Вместо W0 / eps используется cezh
-        Ez(m) = ceze(m) * Ez(m) + ...
-            cezh(m) * (Hy(m) - Hy(m - 1));
+        Ez(m) = Ez(m) + (Hy(m) - Hy(m - 1)) * (W0 / eps(m)) * Sc;
     end
 
-    % Источник возбуждения
-    Ez(sourcePos) = Ez(sourcePos) + exp (-(t + 0.5 - (-0.5) - 30.0) ^ 2 / 100.0);
+    % Источник возбуждения с использованием метода 
+    % Total Field / Scattered Field
+    Ez(sourcePos) = Ez(sourcePos) + ...
+      exp(-(t + 0.5 - (-0.5 * sqrt(eps(sourcePos) * mu(sourcePos)) / Sc)...
+      - 30.0) ^ 2 / 100.0);
     
     % Регистрация поля в точке
     probeTimeEz(t) = Ez(probePos);
     
     plot (Ez);
     xlim ([1, maxSize]);
-    ylim ([-1.1, 1.1]);
+    ylim ([-3.1, 3.1]);
     xlabel ('x, отсчет')
     ylabel ('Ez, В/м')
-    line ([layer_x, layer_x], [-1.1, 1.1], ...
-        'Color',[0.0, 0.0, 0.0]);
+    title (sprintf('%d', t))
     grid on
     hold on
     plot (probePos, 0, 'xk');
