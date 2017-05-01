@@ -46,7 +46,7 @@ for t = 1: maxTime
     % Total Field / Scattered Field
     Hy(sourcePos - 1) = Hy(sourcePos - 1) - ...
       exp (-(t - 30.0) ^ 2 / 100.0) /...
-      (W0 / sqrt(eps(sourcePos - 1) / mu(sourcePos - 1)));
+      (W0 / sqrt(eps(sourcePos - 1) / mu(sourcePos - 1)) / Sc);
     
     % Расчет компоненты поля E
     for m = 2: maxSize

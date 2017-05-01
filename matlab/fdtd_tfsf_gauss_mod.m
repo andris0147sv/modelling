@@ -19,7 +19,7 @@ sourcePos = 50;
 
 Nwg = 20;
 Ndg = 50;
-N0 = 8;
+N_lambda = 8;
 
 
 Ez = zeros (1, maxSize);
@@ -40,7 +40,7 @@ for t = 1: maxTime
     end
     
     Hy(sourcePos - 1) = Hy(sourcePos - 1) -...
-        sin (2 * pi * t / N0) *...
+        sin (2 * pi * t / N_lambda) *...
         exp (- ((t - Ndg) / Nwg) ^ 2) / W0;
     
     % Расчет компоненты поля E
@@ -53,7 +53,7 @@ for t = 1: maxTime
 
     % Источник возбуждения
     Ez(sourcePos) = Ez(sourcePos) +...
-        sin (2 * pi * (t + 0.5 - (-0.5)) / N0) *...
+        sin (2 * pi * (t + 0.5 - (-0.5)) / N_lambda) *...
         exp (- ((t + 0.5 - (-0.5) - Ndg) / Nwg) ^ 2);
     
     % Регистрация поля в точке

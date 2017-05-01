@@ -5,8 +5,11 @@ clear
 % Волновое сопротивление свободного пространства
 W0 = 120 * pi;
 
+% Число Куранта
+Sc = 1.0;
+
 % Время расчета в отсчетах
-maxTime = 350;
+maxTime = 500;
 
 % Размер области моделирования в отсчетах
 maxSize = 200;
@@ -38,7 +41,7 @@ for t = 1: maxTime
     for m = 1: maxSize - 1
         % До этой строки Hy(m) хранит значение компоненты Hy
         % за предыдущий момент времени
-        Hy(m) = Hy(m) + (Ez(m + 1) - Ez(m)) / W0 / mu(m);
+        Hy(m) = Hy(m) + (Ez(m + 1) - Ez(m)) * Sc / W0 / mu(m);
     end
     
     Hy(sourcePos - 1) = Hy(sourcePos - 1) -...
@@ -51,7 +54,7 @@ for t = 1: maxTime
     for m = 2: maxSize - 1
         % До этой строки Ez(m) хранит значение компоненты Ez
         % за предыдущий момент времени
-        Ez(m) = Ez(m) + (Hy(m) - Hy(m - 1)) * W0 / eps (m);
+        Ez(m) = Ez(m) + (Hy(m) - Hy(m - 1)) * Sc * W0 / eps (m);
     end
 
     % Источник возбуждения
@@ -73,7 +76,7 @@ for t = 1: maxTime
     plot (probePos, 0, 'xk');
     plot (sourcePos, 0, '*r');
     hold off
-    pause (0.05)
+    pause (0.03)
 end
 
 figure
