@@ -18,7 +18,7 @@ maxSize = 200;
 sourcePos = 50;
 
 % Положение датчика, регистрирующего поле
-probePos = 120;
+probePos = 160;
 
 layer_x = 100;
 
@@ -101,7 +101,8 @@ for t = 1: maxTime
     
     % Граничные условия ABC второй степени (справа)
     Ez(end) = k1Right * (k2Right * (Ez(end - 2) + oldEzRight2(end)) +...
-        k3Right * (oldEzRight1(end) + oldEzRight1(end - 2) - Ez(end - 1) - oldEzRight2(end - 1)) - ...
+        k3Right * (oldEzRight1(end) + oldEzRight1(end - 2) - Ez(end - 1)...
+        - oldEzRight2(end - 1)) - ...
         k4Right * oldEzRight1(end - 1)) - oldEzRight2(end - 2);
     
     oldEzRight2 = oldEzRight1;
