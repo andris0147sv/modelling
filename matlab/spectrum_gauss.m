@@ -42,4 +42,4 @@ grid on
 xlabel ('Частота, Гц')
 ylabel ('|P|')
 xlim ([0, 5e9]);
-set(gca,'XTick',[-5e9: 1e9: 5e9])
+set(gca,'XTick',-5e9: 1e9: 5e9)

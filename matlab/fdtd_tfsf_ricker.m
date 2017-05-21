@@ -20,7 +20,7 @@ sourcePos = 50;
 
 Sc = 1.0;
 Np = 30;
-Md = 2;
+Md = 2.5;
 
 Ez = zeros (1, maxSize);
 Hy = zeros (1, maxSize - 1);

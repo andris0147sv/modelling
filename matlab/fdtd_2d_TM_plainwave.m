@@ -9,7 +9,7 @@ clc
 d = 1e-3;
 
 % Время моделирования в секундах
-maxTime_sec = 1e-9;
+maxTime_sec = 1.1e-9;
 
 % Размер области моделирования в метрах
 sizeX_m = 0.2;
@@ -17,6 +17,10 @@ sizeY_m = 0.2;
 
 % Положение источника плоской волны
 port_x_m = 0.1;
+
+% Положение пробника в метрах
+probe_x_m = 0.12;
+probe_y_m = 0.08;
 
 % Параметры гауссова сигнала
 gauss_width_sec = 2e-11;
@@ -51,6 +55,10 @@ sizeY = ceil (sizeY_m / d);
 
 % Положение источника плоской волны
 port_x = ceil (port_x_m / d);
+
+% Положение пробника
+probe_x = ceil(probe_x_m / d);
+probe_y = ceil(probe_y_m / d);
 
 gauss_width = gauss_width_sec / dt;
 gauss_delay = gauss_delay_sec / dt;
@@ -91,6 +99,10 @@ Ceze = (1 - sigma .* dt ./ (2 * eps * eps0)) ./ ...
 Cezh = 1 ./ (1 + (sigma .* dt ./ (2 * eps * eps0))) .*...
     dt ./ (eps * eps0 * d);
 
+% Поле, зарегистрированное в датчике в зависимости от времени
+probeTimeEz = zeros (1, maxTime);
+probeTimeHx = zeros (1, maxTime);
+probeTimeHy = zeros (1, maxTime);
 
 figure;
 [x, y] = meshgrid (1:sizeX, 1:sizeY);
@@ -124,13 +136,40 @@ for t = 1: maxTime
     Ez(port_x, 2:end-1) = Ez(port_x, 2:end-1) +...
         exp (-(t - gauss_delay) ^ 2 / (gauss_width ^ 2));
     
+    % Регистрация поля в пробнике
+    probeTimeEz(t) = Ez(probe_x, probe_y);
+    probeTimeHx(t) = Hx(probe_x, probe_y);
+    probeTimeHy(t) = Hy(probe_x, probe_y);
+    
     %surfl(x, y, Ez);
     %shading interp;
 
     imagesc(Ez', [-1, 1]);
     colormap gray;
     
-    zlim([-1.1, 1.1])
+    zlim([-1.1, 1.1]) 
+    
+    hold on
+    scatter(probe_x, probe_y, 100, 'wx');
+    hold off
     pause (0.03);
 end
 
+figure
+subplot (3, 1, 1)
+plot (probeTimeEz, 'b')
+xlabel ('t, отсчет')
+ylabel ('Ez, В/м')
+grid on
+
+subplot (3, 1, 2)
+plot (probeTimeHx, 'r')
+xlabel ('t, отсчет')
+ylabel ('Hx, А/м')
+grid on
+
+subplot (3, 1, 3)
+plot (probeTimeHy, 'r')
+xlabel ('t, отсчет')
+ylabel ('Hy, А/м')
+grid on
