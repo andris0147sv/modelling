@@ -147,7 +147,7 @@ for t = 1: maxTime
     %surfl(x, y, Ex);
     %shading interp;
 
-    imagesc(Ey', [-10, 10]);
+    imagesc(Ex', [-10, 10]);
     % colormap gray;
     colormap jet;
         

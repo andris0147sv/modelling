@@ -147,8 +147,8 @@ for t = 1: maxTime
     %shading interp;
 
     imagesc(Ez', [-0.05, 0.05]);
-    %colormap gray;
-    colormap jet;
+    colormap gray;
+    %colormap jet;
     
     zlim([-0.05, 0.05])
     
