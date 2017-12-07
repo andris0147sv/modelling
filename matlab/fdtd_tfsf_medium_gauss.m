@@ -59,7 +59,7 @@ for t = 1: maxTime
     % Total Field / Scattered Field
     Ez(sourcePos) = Ez(sourcePos) + ...
       exp(-(t + 0.5 - (-0.5 * sqrt(eps(sourcePos) * mu(sourcePos)) / Sc)...
-      - 30.0) ^ 2 / 100.0) * Sc / (sqrt(eps(sourcePos - 1) * mu(sourcePos - 1)));
+      - 30.0) ^ 2 / 100.0) * Sc / (sqrt(eps(sourcePos) * mu(sourcePos)));
     
     % Регистрация поля в точке
     probeTimeEz(t) = Ez(probePos);

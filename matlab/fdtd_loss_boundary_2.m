@@ -43,8 +43,10 @@ cezh = (ones (1, maxSize) * W0 ./ eps);
 cezh(layer_loss_x: end) = cezh(layer_loss_x: end) / (1 + loss);
 
 % Усреднение коэффициентов на границе поглощающего слоя
-ceze(layer_loss_x) = (ceze(layer_loss_x - 1) + ceze(layer_loss_x + 1)) / 2;
-cezh(layer_loss_x) = (cezh(layer_loss_x - 1) + cezh(layer_loss_x + 1)) / 2;
+ceze(layer_loss_x) = (ceze(layer_loss_x - 1) +...
+    ceze(layer_loss_x + 1)) / 2;
+cezh(layer_loss_x) = (cezh(layer_loss_x - 1) +...
+    cezh(layer_loss_x + 1)) / 2;
 
 % Коэффициенты для расчета поля H
 chyh = ones (1, maxSize - 1);
@@ -63,11 +65,11 @@ for t = 1: maxTime
     for m = 1: maxSize - 1
         % До этой строки Hy(n) хранит значение компоненты Hy
         % за предыдущий момент времени
-        Hy(m) = chyh(m) * Hy(m) +...
+        Hy(m) = chyh(m) * Hy(m) + ...
             chye(m) * (Ez(m + 1) - Ez(m));
     end
     
-    Hy(sourcePos - 1) = Hy(sourcePos - 1) -...
+    Hy(sourcePos - 1) = Hy(sourcePos - 1) - ...
         exp (-(t - 30.0) ^ 2 / 100.0) / W0;
     
     % Расчет компоненты поля E

@@ -28,6 +28,7 @@ figure
 for t = 1: maxTime
     % Расчет компоненты поля H
     Hy(maxSize) = Hy(maxSize - 1);
+    
     for m = 1: maxSize - 1
         % До этой строки Hy(n) хранит значение компоненты Hy
         % за предыдущий момент времени
@@ -53,10 +54,10 @@ for t = 1: maxTime
     % Источник возбуждения с использованием метода 
     % Total Field / Scattered Field
     Ez(sourcePos) = Ez(sourcePos) +...
-      exp (-(t + 0.5 - (-0.5) - 30.0) ^ 2 / 100.0);
+    exp (-(t + 0.5 - (-0.5) - 30.0) ^ 2 / 100.0);
     
     % Ez(sourcePos) = Ez(sourcePos) +...
-    %  exp (-(t + 0.5 - (sourcePos - 0.5) - 30.0) ^ 2 / 100.0);
+    % exp (-(t + 0.5 - (sourcePos - 0.5) - 30.0) ^ 2 / 100.0);
     
     % Регистрация поля в точке
     probeTimeEz(t) = Ez(probePos);

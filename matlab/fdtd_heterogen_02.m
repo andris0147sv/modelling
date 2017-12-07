@@ -22,12 +22,14 @@ sourcePos = 50;
 
 % Положение начала диэлектрика
 layer_x = 100;
+% layer_x2 = 120;
 
 Ez = zeros (1, maxSize);
 Hy = zeros (1, maxSize - 1);
 
 eps = ones (size (Ez));
 eps(layer_x: end) = 9.0;
+% eps(layer_x2: end) = 4.0;
 
 mu = ones (size (Hy));
 
@@ -71,6 +73,8 @@ for t = 1: maxTime
     ylabel ('Ez, В/м')
     line ([layer_x, layer_x], [-1.1, 1.1], ...
         'Color',[0.0, 0.0, 0.0]);
+%     line ([layer_x2, layer_x2], [-1.1, 1.1], ...
+%         'Color',[0.0, 0.0, 0.0]);
     grid on
     hold on
     plot (probePos, 0, 'xk');
