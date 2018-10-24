@@ -110,7 +110,6 @@ if __name__ == '__main__':
 
     pylab.ion()
     fig = pylab.figure()
-    x, y = pylab.meshgrid(*visualize_field.shape)
 
     for t in range(maxTime):
         Hz[:-1, :-1] = (Chzh[:-1, :-1] * Hz[:-1, :-1] +
