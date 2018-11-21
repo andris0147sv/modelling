@@ -8,23 +8,26 @@ clc
 d = 1e-3;
 
 % Время моделирования в секундах
-maxTime_sec = 1.1e-9;
+maxTime_sec = 1.1e-9 * 15;
 
 % Размер области моделирования в метрах
-sizeX_m = 0.2;
-sizeY_m = 0.2;
+sizeX_m = 0.1;
+sizeY_m = 0.1;
 
 % Положение точечного источника в метрах
-port_x_m = 0.1;
-port_y_m = 0.1;
+port_x_m = sizeX_m / 2;
+port_y_m = sizeY_m / 2;
 
 % Положение пробника в метрах
-probe_x_m = 0.12;
-probe_y_m = 0.08;
+probe_x_m = 0.05;
+probe_y_m = sizeY_m / 3;
 
 % Параметры гауссова сигнала
 gauss_width_sec = 2e-11;
 gauss_delay_sec = 2.5 * gauss_width_sec;
+
+Nl_m = 0.03;
+Nl = Nl_m / d;
 
 %% Физические константы
 % Магнитная постоянная
@@ -83,6 +86,8 @@ sigma = zeros (sizeX, sizeY);
 % "Магнитная проводимость" среды
 sigma_m = zeros (sizeX, sizeY);
 
+phi_0 = -2 * pi / Nl;
+
 %% Коэффициенты для конечно-разностной схемы
 Chxh = (1 - sigma_m .* dt ./ (2 * mu * mu0)) ./ ...
     (1 + sigma_m .* dt ./ (2 * mu * mu0));
@@ -112,7 +117,7 @@ x = x';
 y = y';
 
 %% Конечно-разностная схема
-for t = 1: maxTime
+for t = 1: maxTime        
     for m = 1:sizeX
         for n = 1:sizeY - 1
             Hx(m, n) = Chxh(m, n) * Hx(m, n) -...
@@ -136,7 +141,7 @@ for t = 1: maxTime
     end
     
     Ez(port_x, port_y) = Ez(port_x, port_y) +...
-                         exp (-(t - gauss_delay) ^ 2 / (gauss_width ^ 2));
+                         sin (2 * pi * t / Nl + phi_0);
                      
     % Регистрация поля в пробнике
     probeTimeEz(t) = Ez(probe_x, probe_y);
@@ -146,17 +151,18 @@ for t = 1: maxTime
     %surfl(x, y, Ez);
     %shading interp;
 
-    imagesc(Ez', [-0.05, 0.05]);
-    colormap gray;
-    %colormap jet;
+    % imagesc(Ez', [-0.1, 0.1]);
+    imagesc([0, sizeX_m], [0, sizeY_m], Ez', [-0.5, 0.5]);
+    %colormap gray;
+    colormap jet;
     
-    zlim([-0.05, 0.05])
+    %zlim([-1, 1])
     
     hold on
     scatter(probe_x, probe_y, 100, 'x');
     scatter(port_x, port_y, 100, '*');
     hold off
-    pause (0.03);
+    pause (0.01);
 end
 
 figure
