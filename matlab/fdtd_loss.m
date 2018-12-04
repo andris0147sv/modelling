@@ -7,10 +7,9 @@ W0 = 120 * pi;
 
 % Потери в среде. loss = sigma * dt / (2 * eps * eps0)
 loss = 0.01;
-% loss = 1000;
 
 % Время расчета в отсчетах
-maxTime = 800;
+maxTime = 500;
 
 % Размер области моделирования в отсчетах
 maxSize = 200;
@@ -18,8 +17,8 @@ maxSize = 200;
 % Положение источника
 sourcePos = 50;
 
-% Положение датчика для регистрации поля
-probePos = 60;
+% Положение датчиков, регистрирующих поля, в отсчетах
+probePos = [60, 110, 130, 150, 170];
 
 % Начало слоя с потерями
 layer_x = 100;
@@ -36,8 +35,10 @@ ceze(layer_x: end) = (1 - loss) / (1 + loss);
 cezh = ones (1, maxSize) * W0 ./ eps;
 cezh(layer_x: end) = cezh(layer_x: end) / (1 + loss);
 
-% Поле, зарегистрированное в датчике в зависимости от времени
-probeTimeEz = zeros (1, maxTime);
+% Поля, зарегистрированное в датчиках в зависимости от времени
+% Первый индекс - номер датчика,
+% второй индекс - временной отсчет.
+probeTimeEz = zeros(size(probePos, 2), maxTime);
 
 figure
 
@@ -69,8 +70,10 @@ for t = 1: maxTime
     Ez(sourcePos) = Ez(sourcePos) +...
         exp (-(t + 0.5 - (-0.5) - 30.0) ^ 2 / 100.0);
     
-    % Регистрация поля в точке
-    probeTimeEz(t) = Ez(probePos);
+    % Регистрация поля в датчиках
+    for p = 1:size(probePos, 2)
+        probeTimeEz(p, t) = Ez(probePos(p));
+    end;
     
     plot (Ez);
     xlim ([1, maxSize]);
@@ -88,7 +91,11 @@ for t = 1: maxTime
 end
 
 figure
-plot (probeTimeEz)
+hold on
+for p = 1:size(probePos, 2)
+    plot (probeTimeEz(p,:))
+end
+hold off
 xlabel ('t, отсчет')
 ylabel ('Ez, В/м')
 grid on

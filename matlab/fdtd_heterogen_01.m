@@ -9,13 +9,13 @@ W0 = 120 * pi;
 Sc = 1.0;
 
 % Время расчета в отсчетах
-maxTime = 350;
+maxTime = 500;
 
 % Размер области моделирования в отсчетах
 maxSize = 200;
 
-% Положение датчика, регистрирующего поля в отсчетах
-probePos = 60;
+% Положение датчиков, регистрирующих поля, в отсчетах
+probePos = [60, 110, 160];
 
 % Положение источника возбуждения в отсчетах
 sourcePos = 50;
@@ -31,8 +31,10 @@ eps(layer_x: end) = 9.0;
 
 mu = ones (1, maxSize);
 
-% Поле, зарегистрированное в датчике в зависимости от времени
-probeTimeEz = zeros (1, maxTime);
+% Поля, зарегистрированное в датчиках в зависимости от времени
+% Первый индекс - номер датчика,
+% второй индекс - временной отсчет.
+probeTimeEz = zeros (size(probePos, 2), maxTime);
 
 figure
 
@@ -61,8 +63,10 @@ for t = 1: maxTime
     Ez(sourcePos) = Ez(sourcePos) +...
         exp (-(t + 0.5 - (-0.5) - 30.0) ^ 2 / 100.0) * Sc;
     
-    % Регистрация поля в точке
-    probeTimeEz(t) = Ez(probePos);
+    % Регистрация поля в датчиках
+    for p = 1:size(probePos, 2)
+        probeTimeEz(p, t) = Ez(probePos(p));
+    end
     
     plot (Ez);
     xlim ([1, maxSize]);
@@ -80,7 +84,11 @@ for t = 1: maxTime
 end
 
 figure
-plot (probeTimeEz)
+hold on
+for p = 1:size(probePos, 2)
+    plot (probeTimeEz(p,:))
+end
+hold off
 xlabel ('t, отсчет')
 ylabel ('Ez, В/м')
 grid on

@@ -38,13 +38,14 @@ for t = 1: maxTime
     % Источник возбуждения с использованием метода 
     % Total Field / Scattered Field
     Hy(sourcePos - 1) = Hy(sourcePos - 1) - ...
-      exp (-(t - 30.0) ^ 2 / 100.0) / W0;
+    exp (-(t - 30.0) ^ 2 / 100.0) / W0;
     
     % Hy(sourcePos - 1) = Hy(sourcePos - 1) - ...
     % exp (-(t - 30.0 - sourcePos) ^ 2 / 100.0) / W0;
     
     % Расчет компоненты поля E
     Ez(1) = Ez(2);
+    
     for m = 2: maxSize
         % До этой строки Ez(n) хранит значение компоненты EzS
         % за предыдущий момент времени
