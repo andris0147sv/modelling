@@ -28,6 +28,7 @@ eps = ones (size (Ez));
 eps(1: end) = 9.0;
 
 mu = ones (size (Ez));
+%mu(1: end) = 4.0;
 
 % Поле, зарегистрированное в датчике в зависимости от времени
 probeTimeEz = zeros (1, maxTime);
@@ -45,8 +46,8 @@ for t = 1: maxTime
     % Источник возбуждения с использованием метода 
     % Total Field / Scattered Field
     Hy(sourcePos - 1) = Hy(sourcePos - 1) - ...
-      exp (-(t - 30.0) ^ 2 / 100.0) * Sc /...
-      (W0 * sqrt(mu(sourcePos - 1)));
+        Sc / (W0 * mu(sourcePos - 1)) * ...
+        exp (-(t - 30.0) ^ 2 / 100.0);
     
     % Расчет компоненты поля E
     for m = 2: maxSize
@@ -58,8 +59,9 @@ for t = 1: maxTime
     % Источник возбуждения с использованием метода 
     % Total Field / Scattered Field
     Ez(sourcePos) = Ez(sourcePos) + ...
+      Sc / (sqrt(eps(sourcePos) * mu(sourcePos))) *...
       exp(-(t + 0.5 - (-0.5 * sqrt(eps(sourcePos) * mu(sourcePos)) / Sc)...
-      - 30.0) ^ 2 / 100.0) * Sc / (sqrt(eps(sourcePos) * mu(sourcePos)));
+      - 30.0) ^ 2 / 100.0);
     
     % Регистрация поля в точке
     probeTimeEz(t) = Ez(probePos);

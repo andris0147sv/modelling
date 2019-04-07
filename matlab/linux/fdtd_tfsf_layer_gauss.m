@@ -31,14 +31,9 @@ Ez = zeros (1, maxSize);
 Hy = zeros (1, maxSize);
 
 eps = ones (1, maxSize);
-eps(layer_start: layer_end) = 4.0;
+eps(layer_start: layer_end) = 9.0;
 
 mu = ones (1, maxSize);
-
-% Поля, зарегистрированное в датчиках в зависимости от времени
-% Первый индекс - номер датчика,
-% второй индекс - временной отсчет.
-probeTimeEz = zeros (size(probePos, 2), maxTime);
 
 figure
 
@@ -89,19 +84,8 @@ for t = 1: maxTime
         'Color',[0.0, 0.0, 0.0]);
     grid on
     hold on
-    plot (probePos, 0, 'xk');
     plot (tfsf_left, 0, '*r');
     plot (tfsf_right, 0, '*r')
     hold off
     pause (0.03)
 end
-
-figure
-hold on
-for p = 1:size(probePos, 2)
-    plot (probeTimeEz(p,:))
-end
-hold off
-xlabel ('t, отсчет')
-ylabel ('Ez, В/м')
-grid on

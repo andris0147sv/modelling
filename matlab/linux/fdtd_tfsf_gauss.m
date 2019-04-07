@@ -37,11 +37,11 @@ for t = 1: maxTime
     
     % Источник возбуждения с использованием метода 
     % Total Field / Scattered Field
-    Hy(sourcePos - 1) = Hy(sourcePos - 1) - ...
-        exp (-(t - 30.0 - sourcePos) ^ 2 / 100.0) / W0;
-    
     % Hy(sourcePos - 1) = Hy(sourcePos - 1) - ...
-    %    exp (-(t - 30.0) ^ 2 / 100.0) / W0;
+    %    exp (-(t - 30.0 - sourcePos) ^ 2 / 100.0) / W0;
+    
+    Hy(sourcePos - 1) = Hy(sourcePos - 1) - ...
+       exp (-(t - 30.0) ^ 2 / 100.0) / W0;
     
     % Расчет компоненты поля E
     Ez(1) = Ez(2);
@@ -54,11 +54,11 @@ for t = 1: maxTime
 
     % Источник возбуждения с использованием метода 
     % Total Field / Scattered Field
-    Ez(sourcePos) = Ez(sourcePos) +...
-        exp (-((t + 0.5) - (sourcePos - 0.5) - 30.0) ^ 2 / 100.0);
-    
     % Ez(sourcePos) = Ez(sourcePos) +...
-    % exp (-((t + 0.5) - (-0.5) - 30.0) ^ 2 / 100.0);
+    %    exp (-((t + 0.5) - (sourcePos - 0.5) - 30.0) ^ 2 / 100.0);
+    
+    Ez(sourcePos) = Ez(sourcePos) +...
+        exp (-((t + 0.5) - (-0.5) - 30.0) ^ 2 / 100.0);
        
     % Регистрация поля в точке
     probeTimeEz(t) = Ez(probePos);

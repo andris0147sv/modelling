@@ -43,17 +43,17 @@ for t = 1: maxTime
     
     % Источник возбуждения с использованием метода 
     % Total Field / Scattered Field
+    % Hy(tfsf_left - 1) = Hy(tfsf_left - 1) - ...
+    %    exp (-(t - 30.0 - tfsf_left) ^ 2 / 100.0) / W0;
+
+    % Hy(tfsf_right - 1) = Hy(tfsf_right - 1) + ...
+    %    exp (-(t - 30.0 - tfsf_right) ^ 2 / 100.0) / W0;
+    
     Hy(tfsf_left - 1) = Hy(tfsf_left - 1) - ...
-        exp (-(t - 30.0 - tfsf_left) ^ 2 / 100.0) / W0;
+        exp (-(t - 30.0 - (tfsf_left - tfsf_left)) ^ 2 / 100.0) / W0;
 
     Hy(tfsf_right - 1) = Hy(tfsf_right - 1) + ...
-        exp (-(t - 30.0 - tfsf_right) ^ 2 / 100.0) / W0;
-    
-%     Hy(tfsf_left - 1) = Hy(tfsf_left - 1) - ...
-%         exp (-(t - 30.0 - (tfsf_left - tfsf_left)) ^ 2 / 100.0) / W0;
-% 
-%     Hy(tfsf_right - 1) = Hy(tfsf_right - 1) + ...
-%         exp (-(t - 30.0 - (tfsf_right - tfsf_left)) ^ 2 / 100.0) / W0;
+        exp (-(t - 30.0 - (tfsf_right - tfsf_left)) ^ 2 / 100.0) / W0;
     
     % Расчет компоненты поля E
     Ez(1) = Ez(2);
@@ -66,17 +66,17 @@ for t = 1: maxTime
 
     % Источник возбуждения с использованием метода 
     % Total Field / Scattered Field
+    % Ez(tfsf_left) = Ez(tfsf_left) + ...
+    %    exp (-(t + 0.5 - (tfsf_left - 0.5) - 30.0) ^ 2 / 100.0);
+    
+    % Ez(tfsf_right) = Ez(tfsf_right) - ...
+    %    exp (-(t + 0.5 - (tfsf_right - 0.5) - 30.0) ^ 2 / 100.0);
+    
     Ez(tfsf_left) = Ez(tfsf_left) + ...
-        exp (-(t + 0.5 - (tfsf_left - 0.5) - 30.0) ^ 2 / 100.0);
+        exp (-(t + 0.5 - (tfsf_left - tfsf_left - 0.5) - 30.0) ^ 2 / 100.0);
     
     Ez(tfsf_right) = Ez(tfsf_right) - ...
-        exp (-(t + 0.5 - (tfsf_right - 0.5) - 30.0) ^ 2 / 100.0);
-    
-%     Ez(tfsf_left) = Ez(tfsf_left) + ...
-%         exp (-(t + 0.5 - (tfsf_left - tfsf_left - 0.5) - 30.0) ^ 2 / 100.0);
-%     
-%     Ez(tfsf_right) = Ez(tfsf_right) - ...
-%         exp (-(t + 0.5 - (tfsf_right - tfsf_left - 0.5) - 30.0) ^ 2 / 100.0);
+        exp (-(t + 0.5 - (tfsf_right - tfsf_left - 0.5) - 30.0) ^ 2 / 100.0);
     
     % Регистрация поля в точке
     probeTimeEz(t) = Ez(probePos);
