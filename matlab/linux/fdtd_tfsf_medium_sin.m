@@ -15,17 +15,6 @@ maxTime = 500;
 % Размер области моделирования в отсчетах
 maxSize = 200;
 
-% Положение датчика, регистрирующего поля
-probePos = 60;
-
-% Положение источника возбуждения
-sourcePos = 50;
-
-% Параметры модулированного гауссова сигнала
-Nl = 20;
-Nwg = 20;
-Ndg = 50;
-
 Ez = zeros (1, maxSize);
 Hy = zeros (1, maxSize);
 
@@ -34,6 +23,17 @@ eps(1: end) = 9.0;
 
 mu = ones (size (Ez));
 %mu(1: end) = 4.0;
+
+% Положение датчика, регистрирующего поля
+probePos = 60;
+
+% Положение источника возбуждения
+sourcePos = 50;
+
+% Параметры модулированного гауссова сигнала
+Nl = 60;
+% phi_0 = -2 * pi / Nl * sqrt(eps(sourcePos) * mu(sourcePos));
+phi_0 = 0;
 
 % Поле, зарегистрированное в датчике в зависимости от времени
 probeTimeEz = zeros (1, maxTime);
@@ -52,8 +52,7 @@ for t = 1: maxTime
     % Total Field / Scattered Field
     Hy(sourcePos - 1) = Hy(sourcePos - 1) - ...
         Sc / (W0 * mu(sourcePos - 1)) * ...
-        sin(2 * pi * t * Sc / Nl ) * ...
-        exp (-(t - Ndg) ^ 2 / (Nwg ^ 2));
+        sin(2 * pi * t * Sc / Nl + phi_0);
     
     % Расчет компоненты поля E
     for m = 2: maxSize
@@ -66,8 +65,7 @@ for t = 1: maxTime
     % Total Field / Scattered Field
     Ez(sourcePos) = Ez(sourcePos) + ...
       Sc / (sqrt(eps(sourcePos) * mu(sourcePos))) *...
-      sin(2 * pi / Nl * ((t + 0.5) * Sc) - (-0.5)) * ...
-      exp(-(t + 0.5 - (-0.5 * sqrt(eps(sourcePos) * mu(sourcePos)) / Sc)- Ndg) ^ 2 / (Nwg ^ 2));
+      sin(2 * pi / Nl * ((t + 0.5) * Sc - (-0.5 * sqrt(eps(sourcePos) * mu(sourcePos)))) + phi_0);
     
     % Регистрация поля в точке
     probeTimeEz(t) = Ez(probePos);

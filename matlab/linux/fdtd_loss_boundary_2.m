@@ -28,7 +28,7 @@ layer_loss_x = 160;
 
 % Потери в среде. loss = sigma * dt / (2 * eps * eps0)
 loss = zeros(1, maxSize);
-loss(layer_loss_x: end) = 0.02;
+loss(layer_loss_x: end) = 0.01;
 
 Ez = zeros (1, maxSize);
 Hy = zeros (1, maxSize - 1);

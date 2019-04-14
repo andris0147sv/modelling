@@ -21,16 +21,16 @@ probePos = 60;
 % Положение источника возбуждения
 sourcePos = 50;
 
-% Параметры модулированного гауссова сигнала
+% Параметры сигнала
 Nl = 20;
-Nwg = 20;
-Ndg = 50;
+Nwg = 50;
+Ndg = 150;
 
 Ez = zeros (1, maxSize);
 Hy = zeros (1, maxSize);
 
 eps = ones (size (Ez));
-eps(1: end) = 9.0;
+eps(1: end) = 4;
 
 mu = ones (size (Ez));
 %mu(1: end) = 4.0;
@@ -66,8 +66,9 @@ for t = 1: maxTime
     % Total Field / Scattered Field
     Ez(sourcePos) = Ez(sourcePos) + ...
       Sc / (sqrt(eps(sourcePos) * mu(sourcePos))) *...
-      sin(2 * pi / Nl * ((t + 0.5) * Sc) - (-0.5)) * ...
-      exp(-(t + 0.5 - (-0.5 * sqrt(eps(sourcePos) * mu(sourcePos)) / Sc)- Ndg) ^ 2 / (Nwg ^ 2));
+      sin(2 * pi / Nl * ((t + 0.5) * Sc - (-0.5 * sqrt(eps(sourcePos) * mu(sourcePos))))) *...
+      exp(-(t + 0.5 - (-0.5 * sqrt(eps(sourcePos) * mu(sourcePos)) / Sc)...
+      - Ndg) ^ 2 / (Nwg ^ 2));
     
     % Регистрация поля в точке
     probeTimeEz(t) = Ez(probePos);
