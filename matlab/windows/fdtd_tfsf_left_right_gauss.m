@@ -1,13 +1,9 @@
-%% Одномерный FDTD. Версия 1.3.1
+%% Одномерный FDTD.
 % Гауссов импульс распространяется в одну сторону (TFSF boundary)
-% Источник находится в диэлектрике
 clear
 
 % Волновое сопротивление свободного пространства
 W0 = 120 * pi;
-
-% Число Куранта
-Sc = 1;
 
 % Время расчета в отсчетах
 maxTime = 350;
@@ -19,16 +15,16 @@ maxSize = 200;
 probePos = 60;
 
 % Положение источника возбуждения
-sourcePos = 50;
+%sourcePos = 50;
+
+% Левая граница TFSF
+tfsf_left = 50;
+
+% Правая граница TFSF
+tfsf_right = 150;
 
 Ez = zeros (1, maxSize);
 Hy = zeros (1, maxSize);
-
-eps = ones (size (Ez));
-eps(1: end) = 9.0;
-
-mu = ones (size (Ez));
-%mu(1: end) = 4.0;
 
 % Поле, зарегистрированное в датчике в зависимости от времени
 probeTimeEz = zeros (1, maxTime);
@@ -37,31 +33,50 @@ figure
 
 for t = 1: maxTime
     % Расчет компоненты поля H
+    Hy(maxSize) = Hy(maxSize - 1);
+    
     for m = 1: maxSize - 1
         % До этой строки Hy(n) хранит значение компоненты Hy
         % за предыдущий момент времени
-        Hy(m) = Hy(m) + (Ez(m + 1) - Ez(m)) / (W0 * mu(m)) * Sc;
+        Hy(m) = Hy(m) + (Ez(m + 1) - Ez(m)) / W0;
     end
     
     % Источник возбуждения с использованием метода 
     % Total Field / Scattered Field
-    Hy(sourcePos - 1) = Hy(sourcePos - 1) - ...
-        Sc / (W0 * mu(sourcePos - 1)) * ...
-        exp (-(t - 30.0) ^ 2 / 100.0);
+    % Hy(tfsf_left - 1) = Hy(tfsf_left - 1) - ...
+    %    exp (-(t - 30.0 - tfsf_left) ^ 2 / 100.0) / W0;
+
+    % Hy(tfsf_right - 1) = Hy(tfsf_right - 1) + ...
+    %    exp (-(t - 30.0 - tfsf_right) ^ 2 / 100.0) / W0;
+    
+    Hy(tfsf_left - 1) = Hy(tfsf_left - 1) - ...
+        exp (-(t - 30.0 - (tfsf_left - tfsf_left)) ^ 2 / 100.0) / W0;
+
+    Hy(tfsf_right - 1) = Hy(tfsf_right - 1) + ...
+        exp (-(t - 30.0 - (tfsf_right - tfsf_left)) ^ 2 / 100.0) / W0;
     
     % Расчет компоненты поля E
+    Ez(1) = Ez(2);
+    
     for m = 2: maxSize
         % До этой строки Ez(n) хранит значение компоненты EzS
         % за предыдущий момент времени
-        Ez(m) = Ez(m) + (Hy(m) - Hy(m - 1)) * (W0 / eps(m)) * Sc;
+        Ez(m) = Ez(m) + (Hy(m) - Hy(m - 1)) * W0;
     end
 
     % Источник возбуждения с использованием метода 
     % Total Field / Scattered Field
-    Ez(sourcePos) = Ez(sourcePos) + ...
-      Sc / (sqrt(eps(sourcePos) * mu(sourcePos))) *...
-      exp(-(t + 0.5 - (-0.5 * sqrt(eps(sourcePos) * mu(sourcePos)) / Sc)...
-      - 30.0) ^ 2 / 100.0);
+    % Ez(tfsf_left) = Ez(tfsf_left) + ...
+    %    exp (-(t + 0.5 - (tfsf_left - 0.5) - 30.0) ^ 2 / 100.0);
+    
+    % Ez(tfsf_right) = Ez(tfsf_right) - ...
+    %    exp (-(t + 0.5 - (tfsf_right - 0.5) - 30.0) ^ 2 / 100.0);
+    
+    Ez(tfsf_left) = Ez(tfsf_left) + ...
+        exp (-(t + 0.5 - (tfsf_left - tfsf_left - 0.5) - 30.0) ^ 2 / 100.0);
+    
+    Ez(tfsf_right) = Ez(tfsf_right) - ...
+        exp (-(t + 0.5 - (tfsf_right - tfsf_left - 0.5) - 30.0) ^ 2 / 100.0);
     
     % Регистрация поля в точке
     probeTimeEz(t) = Ez(probePos);
@@ -75,7 +90,8 @@ for t = 1: maxTime
     grid on
     hold on
     plot (probePos, 0, 'xk');
-    plot (sourcePos, 0, '*r');
+    plot (tfsf_left, 0, '*r');
+    plot (tfsf_right, 0, '*r');
     hold off
     pause (0.03)
 end

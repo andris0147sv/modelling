@@ -6,16 +6,16 @@ clear
 W0 = 120 * pi;
 
 % Время расчета в отсчетах
-maxTime = 1000;
+maxTime = 1024;
 
 % Размер области моделирования в отсчетах
-maxSize = 500;
+maxSize = 2000;
 
 % Положение датчика, регистрирующего поля
-probePos = 60;
+probePos = 1500;
 
 % Положение источника возбуждения
-sourcePos = 50;
+sourcePos = 1200;
 
 Sc = 0.5;
 
@@ -36,9 +36,6 @@ for t = 1: maxTime
         Hy(m) = Hy(m) + (Ez(m + 1) - Ez(m)) * Sc / W0;
     end
     
-    Hy(sourcePos - 1) = Hy(sourcePos - 1) -...
-        exp (-(t - 30.0) ^ 2 / 100.0) * Sc / W0;
-    
     % Расчет компоненты поля E
     Ez(1) = Ez(2);
     for m = 2: maxSize
@@ -49,14 +46,14 @@ for t = 1: maxTime
 
     % Источник возбуждения
     Ez(sourcePos) = Ez(sourcePos) +...
-        exp (-(t + 0.5 - (-0.5) - 30.0) ^ 2 / 100.0) * Sc;
+        exp (-(t + 0.5 - (-0.5) - 50.0) ^ 2 / 50.0) * Sc;
     
     % Регистрация поля в точке
     probeTimeEz(t) = Ez(probePos);
     
     plot (Ez);
-    xlim ([1, maxSize]);
-    ylim ([-1.1, 1.1]);
+    xlim ([1000, 1600]);
+    ylim ([-0.6, 0.6]);
     xlabel ('x, отсчет')
     ylabel ('Ez, В/м')
     grid on
@@ -67,8 +64,30 @@ for t = 1: maxTime
     pause (0.01)
 end
 
+spectrum = fft(probeTimeEz);
+spectrum_abs = abs(spectrum);
+spectrum_phase = unwrap(angle(spectrum));
+
 figure
+% Сигнал в датчике
+subplot(3, 1, 1)
 plot (probeTimeEz)
 xlabel ('t, отсчет')
 ylabel ('Ez, В/м')
+grid on
+
+% Амплитудный спектр сигнала в датчике
+subplot(3, 1, 2)
+plot (spectrum_abs)
+xlabel ('f')
+ylabel ('|Ez|, В/(м*Гц)')
+xlim([0, 300])
+grid on
+
+% Фазовый спектр сигнала в датчике
+subplot(3, 1, 3)
+plot (spectrum_phase)
+xlabel ('f')
+ylabel ('Phase(Ez), рад.')
+xlim([0, 300])
 grid on

@@ -6,16 +6,25 @@ clear
 W0 = 120 * pi;
 
 % Время расчета в отсчетах
-maxTime = 350;
+maxTime = 450;
 
 % Размер области моделирования в отсчетах
-maxSize = 200;
+maxSize = 350;
 
 % Положение датчика, регистрирующего поля
 probePos = 60;
 
 % Положение источника возбуждения
-sourcePos = 50;
+%sourcePos = 50;
+
+% Левая граница TFSF
+tfsf_left = 50;
+
+% Правая граница TFSF
+tfsf_right = 250;
+
+% Положение металлического листа
+PEC_x = 150;
 
 Ez = zeros (1, maxSize);
 Hy = zeros (1, maxSize);
@@ -37,29 +46,44 @@ for t = 1: maxTime
     
     % Источник возбуждения с использованием метода 
     % Total Field / Scattered Field
-    % Hy(sourcePos - 1) = Hy(sourcePos - 1) - ...
-    %    exp (-(t - 30.0 - sourcePos) ^ 2 / 100.0) / W0;
+    Hy(tfsf_left - 1) = Hy(tfsf_left - 1) - ...
+        exp (-(t - 30.0 - tfsf_left) ^ 2 / 100.0) / W0;
+
+    Hy(tfsf_right - 1) = Hy(tfsf_right - 1) + ...
+        exp (-(t - 30.0 - tfsf_right) ^ 2 / 100.0) / W0;
     
-    Hy(sourcePos - 1) = Hy(sourcePos - 1) - ...
-       exp (-(t - 30.0) ^ 2 / 100.0) / W0;
+%     Hy(tfsf_left - 1) = Hy(tfsf_left - 1) - ...
+%         exp (-(t - 30.0 - (tfsf_left - tfsf_left)) ^ 2 / 100.0) / W0;
+% 
+%     Hy(tfsf_right - 1) = Hy(tfsf_right - 1) + ...
+%         exp (-(t - 30.0 - (tfsf_right - tfsf_left)) ^ 2 / 100.0) / W0;
     
     % Расчет компоненты поля E
     Ez(1) = Ez(2);
     
     for m = 2: maxSize
-        % До этой строки Ez(n) хранит значение компоненты Ez
+        % До этой строки Ez(n) хранит значение компоненты EzS
         % за предыдущий момент времени
         Ez(m) = Ez(m) + (Hy(m) - Hy(m - 1)) * W0;
     end
 
     % Источник возбуждения с использованием метода 
     % Total Field / Scattered Field
-    % Ez(sourcePos) = Ez(sourcePos) +...
-    %    exp (-((t + 0.5) - (sourcePos - 0.5) - 30.0) ^ 2 / 100.0);
+    Ez(tfsf_left) = Ez(tfsf_left) + ...
+        exp (-(t + 0.5 - (tfsf_left - 0.5) - 30.0) ^ 2 / 100.0);
     
-    Ez(sourcePos) = Ez(sourcePos) +...
-        exp (-((t + 0.5) - (-0.5) - 30.0) ^ 2 / 100.0);
-       
+    Ez(tfsf_right) = Ez(tfsf_right) - ...
+        exp (-(t + 0.5 - (tfsf_right - 0.5) - 30.0) ^ 2 / 100.0);
+    
+%     Ez(tfsf_left) = Ez(tfsf_left) + ...
+%         exp (-(t + 0.5 - (tfsf_left - tfsf_left - 0.5) - 30.0) ^ 2 / 100.0);
+%     
+%     Ez(tfsf_right) = Ez(tfsf_right) - ...
+%         exp (-(t + 0.5 - (tfsf_right - tfsf_left - 0.5) - 30.0) ^ 2 / 100.0);
+    
+    % Металлический лист в области моделирования
+    Ez(PEC_x) = 0;
+
     % Регистрация поля в точке
     probeTimeEz(t) = Ez(probePos);
     
@@ -72,7 +96,10 @@ for t = 1: maxTime
     grid on
     hold on
     plot (probePos, 0, 'xk');
-    plot (sourcePos, 0, '*r');
+    plot (tfsf_left, 0, '*r');
+    plot (tfsf_right, 0, '*r');
+    line ([PEC_x, PEC_x], [-1.1, 1.1], ...
+        'Color',[0.0, 0.0, 0.0]);
     hold off
     pause (0.03)
 end

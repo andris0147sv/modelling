@@ -10,16 +10,10 @@ W0 = 120 * pi;
 Sc = 1;
 
 % Время расчета в отсчетах
-maxTime = 350;
+maxTime = 500;
 
 % Размер области моделирования в отсчетах
 maxSize = 200;
-
-% Положение датчика, регистрирующего поля
-probePos = 60;
-
-% Положение источника возбуждения
-sourcePos = 50;
 
 Ez = zeros (1, maxSize);
 Hy = zeros (1, maxSize);
@@ -29,6 +23,17 @@ eps(1: end) = 9.0;
 
 mu = ones (size (Ez));
 %mu(1: end) = 4.0;
+
+% Положение датчика, регистрирующего поля
+probePos = 60;
+
+% Положение источника возбуждения
+sourcePos = 50;
+
+% Параметры гармонического сигнала
+Nl = 60;
+phi_0 = -2 * pi / Nl;
+%phi_0 = 0;
 
 % Поле, зарегистрированное в датчике в зависимости от времени
 probeTimeEz = zeros (1, maxTime);
@@ -47,7 +52,7 @@ for t = 1: maxTime
     % Total Field / Scattered Field
     Hy(sourcePos - 1) = Hy(sourcePos - 1) - ...
         Sc / (W0 * mu(sourcePos - 1)) * ...
-        exp (-(t - 30.0) ^ 2 / 100.0);
+        sin(2 * pi * t * Sc / Nl + phi_0);
     
     % Расчет компоненты поля E
     for m = 2: maxSize
@@ -60,8 +65,7 @@ for t = 1: maxTime
     % Total Field / Scattered Field
     Ez(sourcePos) = Ez(sourcePos) + ...
       Sc / (sqrt(eps(sourcePos) * mu(sourcePos))) *...
-      exp(-(t + 0.5 - (-0.5 * sqrt(eps(sourcePos) * mu(sourcePos)) / Sc)...
-      - 30.0) ^ 2 / 100.0);
+      sin(2 * pi / Nl * ((t + 0.5) * Sc - (-0.5 * sqrt(eps(sourcePos) * mu(sourcePos)))) + phi_0);
     
     % Регистрация поля в точке
     probeTimeEz(t) = Ez(probePos);

@@ -5,11 +5,8 @@ clear
 % Волновое сопротивление свободного пространства
 W0 = 120 * pi;
 
-% Потери в среде. loss = sigma * dt / (2 * eps * eps0)
-loss = 0.01;
-
 % Время расчета в отсчетах
-maxTime = 500;
+maxTime = 450;
 
 % Размер области моделирования в отсчетах
 maxSize = 200;
@@ -18,7 +15,7 @@ maxSize = 200;
 sourcePos = 50;
 
 % Положение датчиков, регистрирующих поля, в отсчетах
-probePos = [60, 110, 130, 150, 170];
+probePos = [110, 130, 150, 170];
 
 % Начало слоя с потерями
 layer_x = 100;
@@ -26,14 +23,15 @@ layer_x = 100;
 Ez = zeros (1, maxSize);
 Hy = zeros (1, maxSize - 1);
 
+% Потери в среде. loss = sigma * dt / (2 * eps * eps0)
+loss = zeros (1, maxSize);
+loss(layer_x: end) = 0.01;
+
 eps = ones (size (Ez));
 eps(layer_x: end) = 9.0;
 
-ceze = ones (1, maxSize);
-ceze(layer_x: end) = (1 - loss) / (1 + loss);
-
-cezh = ones (1, maxSize) * W0 ./ eps;
-cezh(layer_x: end) = cezh(layer_x: end) / (1 + loss);
+ceze = (1 - loss) ./ (1 + loss);
+cezh = W0 ./ (eps .* (1 + loss));
 
 % Поля, зарегистрированное в датчиках в зависимости от времени
 % Первый индекс - номер датчика,

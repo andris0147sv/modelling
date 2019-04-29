@@ -22,7 +22,7 @@ probePos = 60;
 sourcePos = 50;
 
 % Параметры сигнала
-Nl = 20;
+Nl = 40;
 Nwg = 50;
 Ndg = 150;
 

@@ -41,7 +41,8 @@ for t = 1: maxTime
     end
 
     % Источник возбуждения
-    Ez(sourcePos) = Ez(sourcePos) + exp (-(t - 30.0) ^ 2 / 100.0);
+    Ez(sourcePos) = Ez(sourcePos) + ...
+        exp (-(t - 30.0) ^ 2 / 100.0);
     
     % Регистрация поля в точке
     probeTimeEz(t) = Ez(probePos);

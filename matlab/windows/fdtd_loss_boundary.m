@@ -6,15 +6,6 @@ clear
 % Волновое сопротивление свободного пространства
 W0 = 120 * pi;
 
-% Потери в среде. loss = sigma * dt / (2 * eps * eps0)
-loss = 0.02;
-
-% Начало диэлектрического слоя
-layer_x = 100;
-
-% Где начинается поглощающий диэлектрик
-layer_loss_x = 160;
-
 % Время расчета в отсчетах
 maxTime = 750;
 
@@ -27,25 +18,29 @@ sourcePos = 50;
 % Положение датчика, регистрирующего поля
 probePos = 60;
 
+% Начало диэлектрического слоя
+layer_x = 100;
+
+% Где начинается поглощающий диэлектрик
+layer_loss_x = 160;
+
 Ez = zeros (1, maxSize);
 Hy = zeros (1, maxSize - 1);
 
 eps = ones (size (Ez));
 eps(layer_x: end) = 9.0;
 
-% Коэффициенты для расчета поля E
-ceze = ones (1, maxSize);
-ceze(layer_loss_x: end) = (1 - loss) / (1 + loss);
+% Потери в среде. loss = sigma * dt / (2 * eps * eps0)
+loss = zeros(1, maxSize);
+loss(layer_loss_x: end) = 0.02;
 
-cezh = (ones (1, maxSize) * W0 ./ eps);
-cezh(layer_loss_x: end) = cezh(layer_loss_x: end) / (1 + loss);
+% Коэффициенты для расчета поля E
+ceze = (1 - loss) ./ (1 + loss);
+cezh = W0 ./ (eps .* (1 + loss));
 
 % Коэффициенты для расчета поля H
-chyh = ones (1, maxSize - 1);
-chyh(layer_loss_x: end) = (1 - loss) / (1 + loss);
-
-chye = ones (1, maxSize - 1) / W0;
-chye(layer_loss_x: end) = chye(layer_loss_x: end) / (1 + loss);
+chyh = (1 - loss) ./ (1 + loss);
+chye = 1 ./ (W0 * (1 + loss));
 
 % Поле, зарегистрированное в датчике в зависимости от времени
 probeTimeEz = zeros (1, maxTime);
