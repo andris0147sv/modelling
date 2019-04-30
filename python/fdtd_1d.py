@@ -27,6 +27,12 @@ if __name__ == '__main__':
 
     xlist = numpy.arange(maxSize)
     pylab.ion()
+    fig, ax = pylab.subplots()
+    ax.set_xlim(0, maxSize)
+    ax.set_ylim(-1.1, 1.1)
+    ax.set_xlabel('t, отсчет')
+    ax.set_ylabel('Ez, В/м')
+    line, = ax.plot(xlist, Ez)
 
     for t in range(maxTime):
         # Расчет компоненты поля H
@@ -44,13 +50,8 @@ if __name__ == '__main__':
         probeTimeEz[t] = Ez[probePos]
 
         if t % 2 == 0:
-            pylab.clf()
-            pylab.plot(xlist, Ez)
-            pylab.xlim(0, maxSize)
-            pylab.ylim(-1.1, 1.1)
-            pylab.xlabel('t, отсчет')
-            pylab.ylabel('Ez, В/м')
-            pylab.draw()
-            pylab.pause(0.01)
+            line.set_ydata(Ez)
+            fig.canvas.draw()
+            fig.canvas.flush_events()
 
     pylab.close()
