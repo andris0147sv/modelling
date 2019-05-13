@@ -13,14 +13,14 @@ maxTime_sec = 1.1e-9;
 
 % Размер области моделирования в метрах
 sizeX_m = 0.2;
-sizeY_m = 0.2;
+sizeY_m = 0.6;
 
 % Положение источника плоской волны
 port_x_m = 0.1;
 
 % Положение пробника в метрах
 probe_x_m = 0.12;
-probe_y_m = 0.08;
+probe_y_m = 0.28;
 
 % Параметры гауссова сигнала
 gauss_width_sec = 2e-11;
@@ -145,12 +145,13 @@ for t = 1: maxTime
     %shading interp;
 
     imagesc(Ez', [-1, 1]);
-    colormap gray;
+    % colormap gray;
+    colormap jet;
     
     zlim([-1.1, 1.1]) 
     
     hold on
-    scatter(probe_x, probe_y, 100, 'wx');
+    scatter(probe_x, probe_y, 100, 'bx');
     hold off
     pause (0.03);
 end

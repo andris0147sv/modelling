@@ -20,7 +20,7 @@ port_y_m = 0.1;
 
 % Положение пробника в метрах
 probe_x_m = 0.12;
-probe_y_m = 0.08;
+probe_y_m = 0.1;
 
 % Параметры гауссова сигнала
 gauss_width_sec = 2e-11;
@@ -147,8 +147,8 @@ for t = 1: maxTime
     %shading interp;
 
     imagesc(Ez', [-0.05, 0.05]);
-    colormap gray;
-    %colormap jet;
+    %colormap gray;
+    colormap jet;
     
     zlim([-0.05, 0.05])
     
