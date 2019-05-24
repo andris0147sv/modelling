@@ -6,10 +6,19 @@ from typing import List
 
 
 class AnimateFieldDisplay:
+    '''
+    Класс для отображения анимации распространения ЭМ волны в пространстве
+    '''
     def __init__(self,
                  maxXSize: int,
                  minYSize: float, maxYSize: float,
                  probePos: List[int]):
+        '''
+        maxXSize - размер области моделирования в отсчетах.
+        minYSize, maxYSize - интервал отображения графика по оси Y.
+        probePos - список координат пробников для регистрации временных
+            сигналов.
+        '''
         self.maxXSize = maxXSize
         self.minYSize = minYSize
         self.maxYSize = maxYSize
@@ -21,6 +30,9 @@ class AnimateFieldDisplay:
         self._probeStyle = 'xr'
 
     def activate(self):
+        '''
+        Инициализировать окно с анимацией
+        '''
         self._xList = numpy.arange(maxSize)
 
         # Включить интерактивный режим для анимации
@@ -49,9 +61,15 @@ class AnimateFieldDisplay:
                       self._probeStyle)
 
     def stop(self):
+        '''
+        Остановить анимацию
+        '''
         pylab.ioff()
 
     def updateData(self, data):
+        '''
+        Обновить данные с распределением поля в пространстве
+        '''
         self._line.set_ydata(data)
         self._fig.canvas.draw()
         self._fig.canvas.flush_events()
@@ -60,6 +78,12 @@ class AnimateFieldDisplay:
 def showProbeSignals(signals: List[List[float]],
                      minYSize: float,
                      maxYSize: float):
+    '''
+    Показать графики сигналов, зарегистрированых в датчиках.
+
+    signals - список сигналов, зарегистрированных датчиками.
+    minYSize, maxYSize - интервал отображения графика по оси Y.
+    '''
     fig, ax = pylab.subplots()
     ax.set_xlim(0, len(signals[0]))
     ax.set_ylim(minYSize, maxYSize)
@@ -81,7 +105,7 @@ if __name__ == '__main__':
     Sc = 1.0
 
     # Время расчета в отсчетах
-    maxTime = 500
+    maxTime = 1000
 
     # Размер области моделирования в отсчетах
     maxSize = 200
