@@ -64,7 +64,7 @@ class AnimateFieldDisplay:
         '''
         Инициализировать окно с анимацией
         '''
-        self._xList = numpy.arange(maxSize)
+        self._xList = numpy.arange(self.maxXSize)
 
         # Включить интерактивный режим для анимации
         pylab.ion()
