@@ -16,6 +16,7 @@ class AnimateFieldDisplay:
     '''
     Класс для отображения анимации распространения ЭМ волны в пространстве
     '''
+
     def __init__(self,
                  maxXSize: int,
                  minYSize: float, maxYSize: float):

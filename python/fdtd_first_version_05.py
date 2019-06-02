@@ -17,6 +17,7 @@ class Probe:
     '''
     Класс для хранения временного сигнала в пробнике.
     '''
+
     def __init__(self, position: int, maxTime: int):
         '''
         position - положение пробника (номер ячейки).
@@ -44,6 +45,7 @@ class AnimateFieldDisplay:
     '''
     Класс для отображения анимации распространения ЭМ волны в пространстве
     '''
+
     def __init__(self,
                  maxXSize: int,
                  minYSize: float, maxYSize: float):
@@ -178,7 +180,7 @@ if __name__ == '__main__':
 
         # Регистрация поля в датчиках
         for probe in probes:
-            probe.addData(Ez, Hy);
+            probe.addData(Ez, Hy)
 
         if t % 2 == 0:
             display.updateData(Ez)

@@ -54,7 +54,7 @@ if __name__ == '__main__':
 
         # Регистрация поля в датчиках
         for probe in probes:
-            probe.addData(Ez, Hy);
+            probe.addData(Ez, Hy)
 
         if t % 2 == 0:
             display.updateData(Ez)
