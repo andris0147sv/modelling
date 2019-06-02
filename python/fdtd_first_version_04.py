@@ -1,4 +1,11 @@
 # -*- coding: utf-8 -*-
+'''
+История изменений:
+    * Рисование графиков вынесено в класс AnimateFieldDisplay и функцию showProbeSignals.
+    * Циклы по пространству заменены на поэлементные операции с массивами.
+    * Добавлена анимация поля E.
+    * Первая версия программы с использованием метода FDTD.
+'''
 
 import pylab
 import numpy
@@ -11,18 +18,14 @@ class AnimateFieldDisplay:
     '''
     def __init__(self,
                  maxXSize: int,
-                 minYSize: float, maxYSize: float,
-                 probePos: List[int]):
+                 minYSize: float, maxYSize: float):
         '''
         maxXSize - размер области моделирования в отсчетах.
         minYSize, maxYSize - интервал отображения графика по оси Y.
-        probePos - список координат пробников для регистрации временных
-            сигналов.
         '''
         self.maxXSize = maxXSize
         self.minYSize = minYSize
         self.maxYSize = maxYSize
-        self.probePos = probePos
         self._xList = None
         self._line = None
         self._xlabel = 'x, отсчет'
@@ -55,10 +58,13 @@ class AnimateFieldDisplay:
         # Отобразить поле в начальный момент времени
         self._line, = self._ax.plot(self._xList, numpy.zeros(self.maxXSize))
 
+    def drawProbes(self, probePos: List[int]):
+        '''
+        probePos - список координат пробников для регистрации временных
+            сигналов.
+        '''
         # Отобразить положение пробника
-        self._ax.plot(self.probePos,
-                      [0] * len(self.probePos),
-                      self._probeStyle)
+        self._ax.plot(probePos, [0] * len(probePos), self._probeStyle)
 
     def stop(self):
         '''
@@ -121,8 +127,9 @@ if __name__ == '__main__':
 
     # Создание экземпляра класса для отображения
     # распределения поля в пространстве
-    display = AnimateFieldDisplay(maxSize, -1.1, 1.1, [probePos])
+    display = AnimateFieldDisplay(maxSize, -1.1, 1.1)
     display.activate()
+    display.drawProbes([probePos])
 
     for t in range(maxTime):
         # Расчет компоненты поля H
