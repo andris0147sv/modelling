@@ -40,12 +40,15 @@ class AnimateFieldDisplay:
     '''
     Класс для отображения анимации распространения ЭМ волны в пространстве
     '''
+
     def __init__(self,
                  maxXSize: int,
-                 minYSize: float, maxYSize: float):
+                 minYSize: float, maxYSize: float,
+                 yLabel: str):
         '''
         maxXSize - размер области моделирования в отсчетах.
         minYSize, maxYSize - интервал отображения графика по оси Y.
+        yLabel - метка для оси Y
         '''
         self.maxXSize = maxXSize
         self.minYSize = minYSize
@@ -53,7 +56,7 @@ class AnimateFieldDisplay:
         self._xList = None
         self._line = None
         self._xlabel = 'x, отсчет'
-        self._ylabel = 'Ez, В/м'
+        self._ylabel = yLabel
         self._probeStyle = 'xr'
 
     def activate(self):

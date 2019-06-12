@@ -34,9 +34,25 @@ if __name__ == '__main__':
     Ez = numpy.zeros(maxSize)
     Hy = numpy.zeros(maxSize)
 
+    # Параметры отображения поля
+    # Для поля E
+    # display_field = Ez
+    # display_ylabel = 'Ez, В/м'
+    # display_ymin = -1.1
+    # display_ymax = 1.1
+
+    # Для поля H
+    display_field = Hy
+    display_ylabel = 'Hy, А/м'
+    display_ymin = -1.1 / W0
+    display_ymax = 1.1 / W0
+
     # Создание экземпляра класса для отображения
     # распределения поля в пространстве
-    display = tools.AnimateFieldDisplay(maxSize, -1.1, 1.1, 'Ez, В/м')
+    display = tools.AnimateFieldDisplay(maxSize,
+                                        display_ymin, display_ymax,
+                                        display_ylabel)
+
     display.activate()
     display.drawProbes(probePos)
 
@@ -57,7 +73,7 @@ if __name__ == '__main__':
             probe.addData(Ez, Hy)
 
         if t % 2 == 0:
-            display.updateData(Ez)
+            display.updateData(display_field)
 
     display.stop()
 

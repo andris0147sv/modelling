@@ -19,10 +19,12 @@ class AnimateFieldDisplay:
 
     def __init__(self,
                  maxXSize: int,
-                 minYSize: float, maxYSize: float):
+                 minYSize: float, maxYSize: float,
+                 yLabel: str):
         '''
         maxXSize - размер области моделирования в отсчетах.
         minYSize, maxYSize - интервал отображения графика по оси Y.
+        yLabel - метка для оси Y
         '''
         self.maxXSize = maxXSize
         self.minYSize = minYSize
@@ -30,7 +32,7 @@ class AnimateFieldDisplay:
         self._xList = None
         self._line = None
         self._xlabel = 'x, отсчет'
-        self._ylabel = 'Ez, В/м'
+        self._ylabel = yLabel
         self._probeStyle = 'xr'
 
     def activate(self):
@@ -128,7 +130,7 @@ if __name__ == '__main__':
 
     # Создание экземпляра класса для отображения
     # распределения поля в пространстве
-    display = AnimateFieldDisplay(maxSize, -1.1, 1.1)
+    display = AnimateFieldDisplay(maxSize, -1.1, 1.1, 'Ez, В/м')
     display.activate()
     display.drawProbes([probePos])
 
