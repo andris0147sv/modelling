@@ -90,13 +90,13 @@ class AnimateFieldDisplay:
         # Отобразить поле в начальный момент времени
         self._line, = self._ax.plot(self._xList, numpy.zeros(self.maxXSize))
 
-    def drawProbes(self, probePos: List[int]):
+    def drawProbes(self, probesPos: List[int]):
         '''
-        probePos - список координат пробников для регистрации временных
+        probesPos - список координат пробников для регистрации временных
             сигналов.
         '''
         # Отобразить положение пробника
-        self._ax.plot(probePos, [0] * len(probePos), self._probeStyle)
+        self._ax.plot(probesPos, [0] * len(probesPos), self._probeStyle)
 
     def stop(self):
         '''
@@ -156,8 +156,8 @@ if __name__ == '__main__':
     maxSize = 200
 
     # Датчики для регистрации поля
-    probePos = [50, 100]
-    probes = [Probe(pos, maxTime) for pos in probePos]
+    probesPos = [50, 100]
+    probes = [Probe(pos, maxTime) for pos in probesPos]
 
     Ez = numpy.zeros(maxSize)
     Hy = numpy.zeros(maxSize)
@@ -166,7 +166,7 @@ if __name__ == '__main__':
     # распределения поля в пространстве
     display = AnimateFieldDisplay(maxSize, -1.1, 1.1, 'Ez, В/м')
     display.activate()
-    display.drawProbes(probePos)
+    display.drawProbes(probesPos)
 
     for t in range(maxTime):
         # Расчет компоненты поля H

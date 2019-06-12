@@ -28,8 +28,8 @@ if __name__ == '__main__':
     maxSize = 200
 
     # Датчики для регистрации поля
-    probePos = [50, 100]
-    probes = [tools.Probe(pos, maxTime) for pos in probePos]
+    probesPos = [50, 100]
+    probes = [tools.Probe(pos, maxTime) for pos in probesPos]
 
     Ez = numpy.zeros(maxSize)
     Hy = numpy.zeros(maxSize)
@@ -38,7 +38,7 @@ if __name__ == '__main__':
     # распределения поля в пространстве
     display = tools.AnimateFieldDisplay(maxSize, -1.1, 1.1, 'Ez, В/м')
     display.activate()
-    display.drawProbes(probePos)
+    display.drawProbes(probesPos)
 
     for t in range(maxTime):
         # Расчет компоненты поля H

@@ -61,13 +61,13 @@ class AnimateFieldDisplay:
         # Отобразить поле в начальный момент времени
         self._line, = self._ax.plot(self._xList, numpy.zeros(self.maxXSize))
 
-    def drawProbes(self, probePos: List[int]):
+    def drawProbes(self, probesPos: List[int]):
         '''
-        probePos - список координат пробников для регистрации временных
+        probesPos - список координат пробников для регистрации временных
             сигналов.
         '''
         # Отобразить положение пробника
-        self._ax.plot(probePos, [0] * len(probePos), self._probeStyle)
+        self._ax.plot(probesPos, [0] * len(probesPos), self._probeStyle)
 
     def stop(self):
         '''

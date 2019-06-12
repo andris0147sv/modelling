@@ -58,6 +58,7 @@ class AnimateFieldDisplay:
         self._xlabel = 'x, отсчет'
         self._ylabel = yLabel
         self._probeStyle = 'xr'
+        self._sourceStyle = 'ok'
 
     def activate(self):
         '''
@@ -85,13 +86,20 @@ class AnimateFieldDisplay:
         # Отобразить поле в начальный момент времени
         self._line, = self._ax.plot(self._xList, numpy.zeros(self.maxXSize))
 
-    def drawProbes(self, probePos: List[int]):
+    def drawProbes(self, probesPos: List[int]):
         '''
-        probePos - список координат пробников для регистрации временных
-            сигналов.
+        probesPos - список координат пробников для регистрации временных
+            сигналов (в отсчетах).
         '''
         # Отобразить положение пробника
-        self._ax.plot(probePos, [0] * len(probePos), self._probeStyle)
+        self._ax.plot(probesPos, [0] * len(probesPos), self._probeStyle)
+
+    def drawSources(self, sourcesPos: List[int]):
+        '''
+        sourcesPos - список координат источников (в отсчетах).
+        '''
+        # Отобразить положение пробника
+        self._ax.plot(sourcesPos, [0] * len(sourcesPos), self._sourceStyle)
 
     def stop(self):
         '''

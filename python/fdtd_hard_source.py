@@ -1,13 +1,6 @@
 # -*- coding: utf-8 -*-
 '''
-История изменений:
-    * Добавлена возможность переключения отображения поля E или H в анимации.
-    * Функции и классы, не связанные напрямую с методом FDTD, вынесены в модуль tools.
-    * Работа с пробниками вынесена в класс Probe.
-    * Рисование графиков вынесено в класс AnimateFieldDisplay и функцию showProbeSignals.
-    * Циклы по пространству заменены на поэлементные операции с массивами.
-    * Добавлена анимация поля E.
-    * Первая версия программы с использованием метода FDTD.
+Область моделирования с "жестким" источником.
 '''
 
 import numpy
@@ -28,6 +21,9 @@ if __name__ == '__main__':
     # Размер области моделирования в отсчетах
     maxSize = 200
 
+    # Положение источника в отсчетах
+    sourcePos = 75
+
     # Датчики для регистрации поля
     probesPos = [50, 100]
     probes = [tools.Probe(pos, maxTime) for pos in probesPos]
@@ -37,16 +33,16 @@ if __name__ == '__main__':
 
     # Параметры отображения поля
     # Для поля E
-    # display_field = Ez
-    # display_ylabel = 'Ez, В/м'
-    # display_ymin = -1.1
-    # display_ymax = 1.1
+    display_field = Ez
+    display_ylabel = 'Ez, В/м'
+    display_ymin = -1.1
+    display_ymax = 1.1
 
     # Для поля H
-    display_field = Hy
-    display_ylabel = 'Hy, А/м'
-    display_ymin = -1.1 / W0
-    display_ymax = 1.1 / W0
+    # display_field = Hy
+    # display_ylabel = 'Hy, А/м'
+    # display_ymin = -1.1 / W0
+    # display_ymax = 1.1 / W0
 
     # Создание экземпляра класса для отображения
     # распределения поля в пространстве
@@ -56,6 +52,7 @@ if __name__ == '__main__':
 
     display.activate()
     display.drawProbes(probesPos)
+    display.drawSources([sourcePos])
 
     for t in range(maxTime):
         # Расчет компоненты поля H
@@ -67,7 +64,7 @@ if __name__ == '__main__':
         Ez[1:] = Ez[1:] + (Hy[1:] - Hy_shift) * Sc * W0
 
         # Источник возбуждения
-        Ez[0] = numpy.exp(-(t - 30.0) ** 2 / 100.0)
+        Ez[sourcePos] = numpy.exp(-(t - 30.0) ** 2 / 100.0)
 
         # Регистрация поля в датчиках
         for probe in probes:
