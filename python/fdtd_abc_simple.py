@@ -38,12 +38,6 @@ if __name__ == '__main__':
     display_ymin = -1.1
     display_ymax = 1.1
 
-    # Для поля H
-    # display_field = Hy
-    # display_ylabel = 'Hy, А/м'
-    # display_ymin = -1.1 / W0
-    # display_ymax = 1.1 / W0
-
     # Создание экземпляра класса для отображения
     # распределения поля в пространстве
     display = tools.AnimateFieldDisplay(maxSize,
@@ -77,7 +71,7 @@ if __name__ == '__main__':
             probe.addData(Ez, Hy)
 
         if t % 2 == 0:
-            display.updateData(display_field)
+            display.updateData(display_field, t)
 
     display.stop()
 

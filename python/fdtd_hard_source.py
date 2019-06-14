@@ -71,7 +71,7 @@ if __name__ == '__main__':
             probe.addData(Ez, Hy)
 
         if t % 2 == 0:
-            display.updateData(display_field)
+            display.updateData(display_field, t)
 
     display.stop()
 

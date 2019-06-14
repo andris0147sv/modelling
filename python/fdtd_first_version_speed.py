@@ -30,7 +30,7 @@ if __name__ == '__main__':
 
     # Создание экземпляра класса для отображения
     # распределения поля в пространстве
-    display = tools.AnimateFieldDisplay(maxSize, -1.1, 1.1)
+    display = tools.AnimateFieldDisplay(maxSize, -1.1, 1.1, 'Ez, В/м')
     display.activate()
     display.drawProbes(probePos)
 
@@ -51,7 +51,7 @@ if __name__ == '__main__':
             probe.addData(Ez, Hy)
 
         if t % 2 == 0:
-            display.updateData(Ez)
+            display.updateData(Ez, t)
 
     display.stop()
 

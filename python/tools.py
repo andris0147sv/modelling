@@ -107,11 +107,12 @@ class AnimateFieldDisplay:
         '''
         pylab.ioff()
 
-    def updateData(self, data):
+    def updateData(self, data: List[float], timeCount: int):
         '''
         Обновить данные с распределением поля в пространстве
         '''
         self._line.set_ydata(data)
+        self._ax.set_title(str(timeCount))
         self._fig.canvas.draw()
         self._fig.canvas.flush_events()
 

@@ -57,7 +57,7 @@ if __name__ == '__main__':
             probe.addData(Ez, Hy)
 
         if t % 2 == 0:
-            display.updateData(Ez)
+            display.updateData(Ez, t)
 
     display.stop()
 
