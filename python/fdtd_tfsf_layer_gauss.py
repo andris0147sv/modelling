@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 '''
-Моделирование распространения ЭМ волны, пащающей на границу
-вакуум - идеальный диэлектрик.
-Массив по полю Hy короче на один элемент.
-Граничные условия слева и справа связаны с полем Ez. Нет ячеек Hy около границ.
+Метод полного поля / рассеянного поля. Две границы.
+Моделирование распространения ЭМ волны, пащающей на диэлектрический слой.
 '''
 
 import numpy
@@ -19,25 +17,29 @@ if __name__ == '__main__':
     Sc = 1.0
 
     # Время расчета в отсчетах
-    maxTime = 600
+    maxTime = 1000
 
     # Размер области моделирования в отсчетах
-    maxSize = 200
-
-    # Положение источника в отсчетах
-    sourcePos = 50
+    maxSize = 250
 
     # Датчики для регистрации поля
-    probesPos = [75]
+    probesPos = [60, 110, 160]
     probes = [tools.Probe(pos, maxTime) for pos in probesPos]
 
+    # Левая граница TFSF
+    tfsf_left = 50
+
+    # Правая граница TFSF
+    tfsf_right = 200
+
     # Положение начала диэлектрика
-    layer_x = 100
+    layer_start = 100
+    layer_end = 150
 
     # Параметры среды
     # Диэлектрическая проницаемость
     eps = numpy.ones(maxSize)
-    eps[layer_x:] = 9.0
+    eps[layer_start: layer_end] = 9.0
 
     # Магнитная проницаемость
     mu = numpy.ones(maxSize - 1)
@@ -59,8 +61,9 @@ if __name__ == '__main__':
 
     display.activate()
     display.drawProbes(probesPos)
-    display.drawSources([sourcePos])
-    display.drawBoundary(layer_x)
+    display.drawSources([tfsf_left, tfsf_right])
+    display.drawBoundary(layer_start)
+    display.drawBoundary(layer_end)
 
     for t in range(maxTime):
         # Расчет компоненты поля H
@@ -68,19 +71,21 @@ if __name__ == '__main__':
 
         # Источник возбуждения с использованием метода
         # Total Field / Scattered Field
-        Hy[sourcePos - 1] -= numpy.exp(-(t - 30.0) ** 2 / 100.0) / W0
+        Hy[tfsf_left - 1] -= numpy.exp(-(t - 30.0 - (tfsf_left - tfsf_left)) ** 2 / 100.0) / W0
+        Hy[tfsf_right - 1] += numpy.exp(-(t - 30.0 - (tfsf_right - tfsf_left)) ** 2 / 100.0) / W0
 
         # Граничные условия для поля E
         Ez[0] = Ez[1]
         Ez[-1] = Ez[-2]
 
         # Расчет компоненты поля E
-        Hy_shift = Hy[: -1]
-        Ez[1:-1] = Ez[1: -1] + (Hy[1:] - Hy_shift) * Sc * W0 / eps[1: -1]
+        Hy_shift = Hy[:-1]
+        Ez[1:-1] = Ez[1:-1] + (Hy[1:] - Hy_shift) * Sc * W0 / eps[1:-1]
 
         # Источник возбуждения с использованием метода
         # Total Field / Scattered Field
-        Ez[sourcePos] += numpy.exp(-((t + 0.5) - (-0.5) - 30.0) ** 2 / 100.0)
+        Ez[tfsf_left] += numpy.exp(-(t + 0.5 - (tfsf_left - tfsf_left - 0.5) - 30.0) ** 2 / 100.0)
+        Ez[tfsf_right] -= numpy.exp(-(t + 0.5 - (tfsf_right - tfsf_left - 0.5) - 30.0) ** 2 / 100.0)
 
         # Регистрация поля в датчиках
         for probe in probes:

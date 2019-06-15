@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 '''
 Моделирование распространения ЭМ волны, пащающей на границу
-вакуум - идеальный диэлектрик.
-Массив по полю Hy короче на один элемент.
-Граничные условия слева и справа связаны с полем Ez. Нет ячеек Hy около границ.
+вакуум - диэлектрик с потерями.
 '''
 
 import numpy
@@ -28,10 +26,10 @@ if __name__ == '__main__':
     sourcePos = 50
 
     # Датчики для регистрации поля
-    probesPos = [75]
+    probesPos = [110, 130, 150, 170]
     probes = [tools.Probe(pos, maxTime) for pos in probesPos]
 
-    # Положение начала диэлектрика
+    # Положение начала диэлектрика с потерями
     layer_x = 100
 
     # Параметры среды
@@ -41,6 +39,13 @@ if __name__ == '__main__':
 
     # Магнитная проницаемость
     mu = numpy.ones(maxSize - 1)
+
+    # Потери в среде. loss = sigma * dt / (2 * eps * eps0)
+    loss = numpy.zeros(maxSize)
+    loss[layer_x:] = 0.01
+
+    ceze = (1.0 - loss) / (1.0 + loss)
+    cezh = W0 / (eps * (1.0 + loss))
 
     Ez = numpy.zeros(maxSize)
     Hy = numpy.zeros(maxSize - 1)
@@ -75,8 +80,8 @@ if __name__ == '__main__':
         Ez[-1] = Ez[-2]
 
         # Расчет компоненты поля E
-        Hy_shift = Hy[: -1]
-        Ez[1:-1] = Ez[1: -1] + (Hy[1:] - Hy_shift) * Sc * W0 / eps[1: -1]
+        Hy_shift = Hy[:-1]
+        Ez[1:-1] = ceze[1: -1] * Ez[1:-1] + cezh[1: -1] * (Hy[1:] - Hy_shift)
 
         # Источник возбуждения с использованием метода
         # Total Field / Scattered Field
