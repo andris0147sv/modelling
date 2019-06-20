@@ -15,7 +15,7 @@ df = 1.0 / (size * dt);
 w_g = sqrt(log(5.5 * A_max)) / (pi * F_max);
 d_g = w_g * sqrt (log (2.5 * A_max * sqrt (log (2.5 * A_max))));
 
-% Гауссов импульс
+% Дифференцированный гауссов импульс
 time = (0:size - 1) * dt;
 gauss = -2 * ((time - d_g) / w_g) .* exp (-((time - d_g) / w_g) .^ 2);
 

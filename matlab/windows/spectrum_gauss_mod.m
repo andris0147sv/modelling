@@ -17,7 +17,7 @@ df = 1.0 / (size * dt);
 w_g = 2 * sqrt(log(A_max)) / (pi * DeltaF);
 d_g = w_g * sqrt (log (A_0));
 
-% Гауссов импульс
+% Модулированный Гауссов импульс
 time = (0:size - 1) * dt;
 gauss = sin (2 * pi * f_0 * time) .* exp (-((time - d_g) / w_g) .^ 2);
 
