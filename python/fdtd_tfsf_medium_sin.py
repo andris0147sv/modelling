@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 '''
-Моделирование распространения ЭМ волны, пащающей на границу
-вакуум - идеальный диэлектрик.
-Используются граничные условия ABC второй степени.
+Синусоидальный сигнал распространяется в одну сторону (TFSF boundary).
+Источник находится в диэлектрике.
 '''
 
 import numpy
@@ -18,7 +17,7 @@ if __name__ == '__main__':
     Sc = 1.0
 
     # Время расчета в отсчетах
-    maxTime = 750
+    maxTime = 700
 
     # Размер области моделирования в отсчетах
     maxSize = 200
@@ -27,19 +26,20 @@ if __name__ == '__main__':
     sourcePos = 50
 
     # Датчики для регистрации поля
-    probesPos = [160]
+    probesPos = [60]
     probes = [tools.Probe(pos, maxTime) for pos in probesPos]
-
-    # Положение начала диэлектрика
-    layer_x = 100
 
     # Параметры среды
     # Диэлектрическая проницаемость
     eps = numpy.ones(maxSize)
-    eps[layer_x:] = 9.0
+    eps[:] = 9.0
 
     # Магнитная проницаемость
     mu = numpy.ones(maxSize - 1)
+
+    # Параметры гармонического сигнала
+    Nl = 60
+    phi_0 = 0
 
     Ez = numpy.zeros(maxSize)
     Hy = numpy.zeros(maxSize - 1)
@@ -88,7 +88,6 @@ if __name__ == '__main__':
     display.activate()
     display.drawProbes(probesPos)
     display.drawSources([sourcePos])
-    display.drawBoundary(layer_x)
 
     for t in range(maxTime):
         # Расчет компоненты поля H
@@ -96,15 +95,17 @@ if __name__ == '__main__':
 
         # Источник возбуждения с использованием метода
         # Total Field / Scattered Field
-        Hy[sourcePos - 1] -= numpy.exp(-(t - 30.0) ** 2 / 100.0) / W0
+        Hy[sourcePos - 1] -= (Sc / (W0 * mu[sourcePos - 1]) *
+                              numpy.sin(2 * numpy.pi * t * Sc / Nl + phi_0))
 
         # Расчет компоненты поля E
-        Hy_shift = Hy[: -1]
-        Ez[1:-1] = Ez[1: -1] + (Hy[1:] - Hy_shift) * Sc * W0 / eps[1: -1]
+        Hy_shift = Hy[:-1]
+        Ez[1:-1] = Ez[1:-1] + (Hy[1:] - Hy_shift) * Sc * W0 / eps[1:-1]
 
         # Источник возбуждения с использованием метода
         # Total Field / Scattered Field
-        Ez[sourcePos] += numpy.exp(-((t + 0.5) - (-0.5) - 30.0) ** 2 / 100.0)
+        Ez[sourcePos] += (Sc / (numpy.sqrt(eps[sourcePos] * mu[sourcePos])) *
+                          numpy.sin(2 * numpy.pi / Nl * ((t + 0.5) * Sc - (-0.5 * numpy.sqrt(eps[sourcePos] * mu[sourcePos]))) + phi_0))
 
         # Граничные условия ABC второй степени (слева)
         Ez[0] = (k1Left * (k2Left * (Ez[2] + oldEzLeft2[0]) +
