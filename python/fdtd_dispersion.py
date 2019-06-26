@@ -47,8 +47,8 @@ if __name__ == '__main__':
     # Для поля E
     display_field = Ez
     display_ylabel = 'Ez, В/м'
-    display_ymin = -1.1
-    display_ymax = 1.1
+    display_ymin = -0.2
+    display_ymax = 0.6
 
     # Создание экземпляра класса для отображения
     # распределения поля в пространстве
@@ -86,6 +86,7 @@ if __name__ == '__main__':
 
     # Отображение сигналов и их спектров, зарегистрированных в пробниках
     plt.figure()
+    plt.suptitle('Сигналы в датчиках')
 
     for n, probe in enumerate(probes):
         EzField = probe.E
@@ -95,10 +96,11 @@ if __name__ == '__main__':
 
         # Расчет фазы в вычтенным линейным членом
         k = spectrum_phase[k_index] / k_index
-        spectrum_phase_line = spectrum_phase - k * numpy.arange(0, len(spectrum_phase))
+        spectrum_phase_line = spectrum_phase - \
+            k * numpy.arange(0, len(spectrum_phase))
 
         # Отображение сигнала в датчике
-        plt.subplot(3, 1, 1)
+        plt.subplot(4, 1, 1)
         plt.plot(EzField, label='Пробник N {}'.format(n + 1))
         plt.xlabel('t, отсчет')
         plt.ylabel('Ez, В/м')
@@ -106,7 +108,7 @@ if __name__ == '__main__':
         plt.legend()
 
         # Амплитудный спектр сигнала в датчике
-        plt.subplot(3, 1, 2)
+        plt.subplot(4, 1, 2)
         plt.plot(spectrum_abs, label='Пробник N {}'.format(n + 1))
         plt.xlabel('f')
         plt.ylabel('|Ez|, В/(м*Гц)')
@@ -114,13 +116,22 @@ if __name__ == '__main__':
         plt.grid()
         plt.legend()
 
-        # Фазовый спектр сигнала в датчике
-        plt.subplot(3, 1, 3)
-        plt.plot(spectrum_phase, label='Пробник N {}'.format(n + 1))
+        # Фазовый спектр сигнала в датчике без вычитания линейного члена
+        plt.subplot(4, 1, 3)
+        plt.plot(spectrum_phase, label='Пробник N {}'.format(n + 2))
         plt.xlabel('f')
         plt.ylabel('Phase(Ez), рад.')
         plt.xlim(0, 300)
-        # plt.ylim(-4, 4)
+        plt.grid()
+        plt.legend()
+
+        # Фазовый спектр сигнала в датчике
+        plt.subplot(4, 1, 4)
+        plt.plot(spectrum_phase_line, label='Пробник N {}'.format(n + 2))
+        plt.xlabel('f')
+        plt.ylabel('Phase(Ez), рад.')
+        plt.xlim(0, 300)
+        plt.ylim(-4, 4)
         plt.grid()
         plt.legend()
 
@@ -134,7 +145,7 @@ if __name__ == '__main__':
     spectrum_1 = fft(EzField_1)
     spectrum_1_phase = numpy.unwrap(numpy.angle(spectrum_1))
 
-    phase_delta = spectrum_1_phase - spectrum_0_phase
+    phase_delta = numpy.abs(spectrum_1_phase - spectrum_0_phase)
 
     # Коэффициент прохождения среды между двумя пробниками
     R = spectrum_1 / spectrum_0
@@ -147,6 +158,7 @@ if __name__ == '__main__':
 
     # Отображение спектра падающего сигнала
     plt.figure()
+    plt.suptitle('Коэффициент прохождения')
     plt.subplot(3, 1, 1)
     plt.plot(numpy.abs(spectrum_0))
     plt.xlabel('f')
@@ -173,10 +185,12 @@ if __name__ == '__main__':
     plt.grid()
 
     # Расчет фазовой скорости на каждой частоте
-    v = c * probeDist * 2 * numpy.pi * numpy.arange(0, len(spectrum_0)) / (Sc * (-phase_delta) * len(EzField_1))
+    v = (c * probeDist * 2 * numpy.pi *
+         numpy.arange(0, len(spectrum_0)) / (Sc * phase_delta * len(EzField_1)))
 
     # Отображение спектра падающего сигнала
     plt.figure()
+    plt.suptitle('Фазовая скорость')
     plt.subplot(2, 1, 1)
     plt.plot(numpy.abs(spectrum_0))
     plt.xlabel('f')
