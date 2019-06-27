@@ -8,16 +8,6 @@ import matplotlib.pyplot as plt
 import numpy
 
 if __name__ == '__main__':
-    # Физические константы
-    # Магнитная постоянная
-    mu0 = numpy.pi * 4e-7
-
-    # Электрическая постоянная
-    eps0 = 8.854187817e-12
-
-    # Скорость света в вакууме
-    c = 1.0 / numpy.sqrt(mu0 * eps0)
-
     # Шаг сетки (d = dx = dy)
     d = 1e-3
 
@@ -29,18 +19,25 @@ if __name__ == '__main__':
     sizeY_m = 0.2
 
     # Положение точечного источника в метрах
-    port_x_m = sizeX_m / 2
-    port_y_m = sizeY_m / 2
-
-    # Частота источника
-    f = 10e9
-    phi_0 = 0
-    wavelength_m = c / f
-    wavelength = wavelength_m / d
+    port_x_m = 0.15
 
     # Положение пробника в метрах
     probe_x_m = 0.12
-    probe_y_m = sizeY_m / 3
+    probe_y_m = 0.08
+
+    # Параметры гауссова сигнала
+    gauss_width_sec = 2e-11
+    gauss_delay_sec = 2.5 * gauss_width_sec
+
+    # Физические константы
+    # Магнитная постоянная
+    mu0 = numpy.pi * 4e-7
+
+    # Электрическая постоянная
+    eps0 = 8.854187817e-12
+
+    # Скорость света в вакууме
+    c = 1.0 / numpy.sqrt(mu0 * eps0)
 
     # Расчет "дискретных" параметров моделирования
     # "Одномерный" аналог числа Куранта для случая 2D
@@ -60,11 +57,13 @@ if __name__ == '__main__':
 
     # Положение точки возбуждения
     port_x = int(numpy.ceil(port_x_m / d))
-    port_y = int(numpy.ceil(port_y_m / d))
 
     # Положение пробника
     probe_x = int(numpy.ceil(probe_x_m / d))
     probe_y = int(numpy.ceil(probe_y_m / d))
+
+    gauss_width = gauss_width_sec / dt
+    gauss_delay = gauss_delay_sec / dt
 
     # Компоненты поля
     Ex = numpy.zeros((sizeX, sizeY))
@@ -121,7 +120,7 @@ if __name__ == '__main__':
         Ey[1:-1, :-1] = (Ceye[1:-1, :-1] * Ey[1:-1, :-1] -
                          Ceyh[1:-1, :-1] * (Hz[1:-1, :-1] - Hz[:-2, :-1]))
 
-        Hz[port_x, port_y] += numpy.sin(2 * numpy.pi * t / wavelength + phi_0)
+        Hz[port_x, 1:-2] += numpy.exp(-(t - gauss_delay) ** 2 / (gauss_width ** 2))
 
         probeTimeEx[t] = Ex[probe_x, probe_y]
         probeTimeEy[t] = Ey[probe_x, probe_y]
@@ -129,7 +128,7 @@ if __name__ == '__main__':
 
         if t % 2 == 0:
             plt.clf()
-            plt.imshow(Ex.transpose(), vmin=-100.0, vmax=100.0, cmap='jet')
+            plt.imshow(visualize_field.transpose(), vmin=-300.0, vmax=300.0, cmap='jet')
             plt.scatter([probe_x], [probe_y], marker='x')
             plt.draw()
             plt.pause(0.01)

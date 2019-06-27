@@ -4,7 +4,7 @@
 Поляризация TEz. Граничные условия - PEC
 '''
 
-import pylab
+import matplotlib.pyplot as plt
 import numpy
 
 if __name__ == '__main__':
@@ -108,8 +108,8 @@ if __name__ == '__main__':
     probeTimeEy = numpy.zeros(maxTime)
     probeTimeHz = numpy.zeros(maxTime)
 
-    pylab.ion()
-    fig = pylab.figure()
+    plt.ion()
+    fig = plt.figure()
 
     for t in range(maxTime):
         Hz[:-1, :-1] = (Chzh[:-1, :-1] * Hz[:-1, :-1] +
@@ -122,36 +122,37 @@ if __name__ == '__main__':
         Ey[1:-1, :-1] = (Ceye[1:-1, :-1] * Ey[1:-1, :-1] -
                          Ceyh[1:-1, :-1] * (Hz[1:-1, :-1] - Hz[:-2, :-1]))
 
-        Hz[port_x, port_y] = Hz[port_x, port_y] + numpy.exp(-(t - gauss_delay) ** 2 / (gauss_width ** 2))
+        Hz[port_x, port_y] += numpy.exp(-(t - gauss_delay) ** 2 / (gauss_width ** 2))
 
         probeTimeEx[t] = Ex[probe_x, probe_y]
         probeTimeEy[t] = Ey[probe_x, probe_y]
         probeTimeHz[t] = Hz[probe_x, probe_y]
 
         if t % 2 == 0:
-            pylab.clf()
-            pylab.imshow(Ex.transpose(), vmin=-10.0, vmax=10.0, cmap='jet')
-            pylab.draw()
-            pylab.pause(0.01)
+            plt.clf()
+            plt.imshow(visualize_field.transpose(), vmin=-15.0, vmax=15.0, cmap='jet')
+            plt.scatter([probe_x], [probe_y], marker='x')
+            plt.draw()
+            plt.pause(0.01)
 
-    pylab.ioff()
-    pylab.figure()
-    pylab.subplot(3, 1, 1)
-    pylab.plot(probeTimeEx, 'b')
-    pylab.xlabel('t, отсчет')
-    pylab.ylabel('Ex, В/м')
-    pylab.grid()
+    plt.ioff()
+    plt.figure()
+    plt.subplot(3, 1, 1)
+    plt.plot(probeTimeEx, 'r')
+    plt.xlabel('t, отсчет')
+    plt.ylabel('Ex, В/м')
+    plt.grid()
 
-    pylab.subplot(3, 1, 2)
-    pylab.plot(probeTimeEy, 'b')
-    pylab.xlabel('t, отсчет')
-    pylab.ylabel('Ey, В/м')
-    pylab.grid()
+    plt.subplot(3, 1, 2)
+    plt.plot(probeTimeEy, 'r')
+    plt.xlabel('t, отсчет')
+    plt.ylabel('Ey, В/м')
+    plt.grid()
 
-    pylab.subplot(3, 1, 3)
-    pylab.plot(probeTimeHz, 'r')
-    pylab.xlabel('t, отсчет')
-    pylab.ylabel('Hz, А/м')
-    pylab.grid()
+    plt.subplot(3, 1, 3)
+    plt.plot(probeTimeHz, 'b')
+    plt.xlabel('t, отсчет')
+    plt.ylabel('Hz, А/м')
+    plt.grid()
 
-    pylab.show()
+    plt.show()
