@@ -75,14 +75,14 @@ if __name__ == '__main__':
     # Положение источника в отсчетах
     sourcePos = 50
 
-    # Создание гауссова импульса для метода TFSF
-    mag_E = Sc / (numpy.sqrt(eps[sourcePos] * mu[sourcePos]))
-    dg_E = (-0.5 * numpy.sqrt(eps[sourcePos] * mu[sourcePos]) / Sc) + 30.0
-    wg_E = 10.0
-
+    # Создание источника гауссова импульса для метода TFSF
     mag_H = -Sc / (W0 * mu[sourcePos - 1])
     dg_H = 30.0
     wg_H = 10.0
+
+    mag_E = Sc / (numpy.sqrt(eps[sourcePos] * mu[sourcePos]))
+    dg_E = (-0.5 * numpy.sqrt(eps[sourcePos] * mu[sourcePos]) / Sc) + dg_H
+    wg_E = wg_H
 
     source_tfsf_E = sources.Gaussian(mag_E, dg_E, wg_E)
     source_tfsf_H = sources.Gaussian(mag_H, dg_H, wg_H)

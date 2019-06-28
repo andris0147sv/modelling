@@ -19,22 +19,18 @@ if __name__ == '__main__':
     Sc = 1.0
 
     # Время расчета в отсчетах
-    maxTime = 750
+    maxTime = 250
 
     # Размер области моделирования в отсчетах
     maxSize = 200
 
     # Датчики для регистрации поля
-    probesPos = [160]
+    probesPos = [50]
     probes = [tools.Probe(pos, maxTime) for pos in probesPos]
-
-    # Положение начала диэлектрика
-    layer_x = 100
 
     # Параметры среды
     # Диэлектрическая проницаемость
     eps = numpy.ones(maxSize)
-    eps[layer_x:] = 9.0
 
     # Магнитная проницаемость
     mu = numpy.ones(maxSize - 1)
@@ -43,6 +39,11 @@ if __name__ == '__main__':
     # Положение источника в отсчетах
     sourcePos = 50
     source_E = sources.Gaussian(magnitude=1.0, dg=30.0, wg=10.0)
+    # source_E = sources.GaussianDiff(magnitude=1.0, dg=50.0, wg=8.0)
+    # source_E = sources.GaussianMod(magnitude=1.0, dg=30.0, wg=10.0,
+    #                                Nl=10, Sc=Sc)
+    # source_E = sources.Harmonic(magnitude=1.0, Nl=140, Sc=Sc)
+    # source_E = sources.Ricker(magnitude=1.0, Nl=20, Md=2, Sc=Sc)
 
     Ez = numpy.zeros(maxSize)
     Hy = numpy.zeros(maxSize - 1)
@@ -89,9 +90,8 @@ if __name__ == '__main__':
                                         display_ylabel)
 
     display.activate()
-    display.drawProbes(probesPos)
     display.drawSources([sourcePos])
-    display.drawBoundary(layer_x)
+    display.drawProbes(probesPos)
 
     for t in range(maxTime):
         # Расчет компоненты поля H

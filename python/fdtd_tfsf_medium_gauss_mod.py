@@ -28,8 +28,8 @@ if __name__ == '__main__':
 
     # Параметры сигнала
     Nl = 40
-    Nwg = 50
-    Ndg = 150
+    wg = 50
+    dg = 150
 
     # Датчики для регистрации поля
     probesPos = [60]
@@ -70,7 +70,7 @@ if __name__ == '__main__':
         # Total Field / Scattered Field
         Hy[sourcePos - 1] -= (Sc / (W0 * mu[sourcePos - 1]) *
                               numpy.sin(2 * numpy.pi * t * Sc / Nl) *
-                              numpy.exp(-(t - Ndg) ** 2 / (Nwg ** 2)))
+                              numpy.exp(-(t - dg) ** 2 / (wg ** 2)))
 
         # Граничные условия для поля E
         Ez[0] = Ez[1]
@@ -84,7 +84,7 @@ if __name__ == '__main__':
         # Total Field / Scattered Field
         Ez[sourcePos] += (Sc / (numpy.sqrt(eps[sourcePos] * mu[sourcePos])) *
                           numpy.sin(2 * numpy.pi / Nl * ((t + 0.5) * Sc - (-0.5 * numpy.sqrt(eps[sourcePos] * mu[sourcePos])))) *
-                          numpy.exp(-(t + 0.5 - (-0.5 * numpy.sqrt(eps[sourcePos] * mu[sourcePos]) / Sc) - Ndg) ** 2 / (Nwg ** 2)))
+                          numpy.exp(-(t + 0.5 - (-0.5 * numpy.sqrt(eps[sourcePos] * mu[sourcePos]) / Sc) - dg) ** 2 / (wg ** 2)))
 
         # Регистрация поля в датчиках
         for probe in probes:
