@@ -4,7 +4,7 @@
 Поляризация TMz. Граничные условия - PEC
 '''
 
-import pylab
+import matplotlib.pyplot as plt
 import numpy
 
 if __name__ == '__main__':
@@ -110,8 +110,8 @@ if __name__ == '__main__':
     probeTimeHy = numpy.zeros(maxTime)
     probeTimeEz = numpy.zeros(maxTime)
 
-    pylab.ion()
-    fig = pylab.figure()
+    plt.ion()
+    fig = plt.figure()
 
     for t in range(maxTime):
         Hx[:, :-1] = (Chxh[:, :-1] * Hx[:, :-1] -
@@ -124,40 +124,39 @@ if __name__ == '__main__':
                           Cezh[1:-1, 1:-1] * ((Hy[1:-1, 1:-1] - Hy[:-2, 1:-1]) -
                                               (Hx[1:-1, 1:-1] - Hx[1:-1, :-2])))
 
-        Ez[port_x, port_y] = (Ez[port_x, port_y] +
-                              numpy.sin(2 * numpy.pi * t / wavelength + phi_0))
+        Ez[port_x, port_y] += numpy.sin(2 * numpy.pi * t / wavelength + phi_0)
 
         probeTimeHx[t] = Hx[probe_x, probe_y]
         probeTimeHy[t] = Hy[probe_x, probe_y]
         probeTimeEz[t] = Ez[probe_x, probe_y]
 
         if t % 2 == 0:
-            pylab.clf()
-            pylab.imshow(visualize_field.transpose(),
+            plt.clf()
+            plt.imshow(visualize_field.transpose(),
                          vmin=-0.1,
                          vmax=0.1,
                          cmap='jet')
-            pylab.draw()
-            pylab.pause(0.01)
+            plt.draw()
+            plt.pause(0.01)
 
-    pylab.ioff()
-    pylab.figure()
-    pylab.subplot(3, 1, 1)
-    pylab.plot(probeTimeHx, 'b')
-    pylab.xlabel('t, отсчет')
-    pylab.ylabel('Hx, А/м')
-    pylab.grid()
+    plt.ioff()
+    plt.figure()
+    plt.subplot(3, 1, 1)
+    plt.plot(probeTimeHx, 'b')
+    plt.xlabel('t, отсчет')
+    plt.ylabel('Hx, А/м')
+    plt.grid()
 
-    pylab.subplot(3, 1, 2)
-    pylab.plot(probeTimeHy, 'b')
-    pylab.xlabel('t, отсчет')
-    pylab.ylabel('Hy, А/м')
-    pylab.grid()
+    plt.subplot(3, 1, 2)
+    plt.plot(probeTimeHy, 'b')
+    plt.xlabel('t, отсчет')
+    plt.ylabel('Hy, А/м')
+    plt.grid()
 
-    pylab.subplot(3, 1, 3)
-    pylab.plot(probeTimeEz, 'r')
-    pylab.xlabel('t, отсчет')
-    pylab.ylabel('Ez, В/м')
-    pylab.grid()
+    plt.subplot(3, 1, 3)
+    plt.plot(probeTimeEz, 'r')
+    plt.xlabel('t, отсчет')
+    plt.ylabel('Ez, В/м')
+    plt.grid()
 
-    pylab.show()
+    plt.show()

@@ -20,7 +20,7 @@ sourcePos = 20;
 % Параметры для гармонического сигнала
 Nl = 50;
 
-%phi_0 = 0;
+% phi_0 = 0;
 phi_0 = -2 * pi / Nl;
 
 Ez = zeros (1, maxSize);

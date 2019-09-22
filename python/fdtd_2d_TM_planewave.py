@@ -1,23 +1,13 @@
 # -*- coding: utf-8 -*-
 '''
-Двумерный FDTD. Версия 1.0
-Поляризация TEz. Граничные условия - PEC
+Двумерный FDTD. Поляризация TMz. Граничные условия - PEC.
+Источник возбуждения - плоская волна.
 '''
 
 import matplotlib.pyplot as plt
 import numpy
 
 if __name__ == '__main__':
-    # Физические константы
-    # Магнитная постоянная
-    mu0 = numpy.pi * 4e-7
-
-    # Электрическая постоянная
-    eps0 = 8.854187817e-12
-
-    # Скорость света в вакууме
-    c = 1.0 / numpy.sqrt(mu0 * eps0)
-
     # Шаг сетки (d = dx = dy)
     d = 1e-3
 
@@ -29,18 +19,25 @@ if __name__ == '__main__':
     sizeY_m = 0.2
 
     # Положение точечного источника в метрах
-    port_x_m = sizeX_m / 2
-    port_y_m = sizeY_m / 2
-
-    # Частота источника
-    f = 10e9
-    phi_0 = 0
-    wavelength_m = c / f
-    wavelength = wavelength_m / d
+    port_x_m = 0.15
 
     # Положение пробника в метрах
     probe_x_m = 0.12
-    probe_y_m = sizeY_m / 3
+    probe_y_m = 0.08
+
+    # Параметры гауссова сигнала
+    gauss_width_sec = 2e-11
+    gauss_delay_sec = 2.5 * gauss_width_sec
+
+    # Физические константы
+    # Магнитная постоянная
+    mu0 = numpy.pi * 4e-7
+
+    # Электрическая постоянная
+    eps0 = 8.854187817e-12
+
+    # Скорость света в вакууме
+    c = 1.0 / numpy.sqrt(mu0 * eps0)
 
     # Расчет "дискретных" параметров моделирования
     # "Одномерный" аналог числа Куранта для случая 2D
@@ -60,16 +57,18 @@ if __name__ == '__main__':
 
     # Положение точки возбуждения
     port_x = int(numpy.ceil(port_x_m / d))
-    port_y = int(numpy.ceil(port_y_m / d))
 
     # Положение пробника
     probe_x = int(numpy.ceil(probe_x_m / d))
     probe_y = int(numpy.ceil(probe_y_m / d))
 
+    gauss_width = gauss_width_sec / dt
+    gauss_delay = gauss_delay_sec / dt
+
     # Компоненты поля
-    Ex = numpy.zeros((sizeX, sizeY))
-    Ey = numpy.zeros((sizeX, sizeY))
-    Hz = numpy.zeros((sizeX, sizeY))
+    Hx = numpy.zeros((sizeX, sizeY))
+    Hy = numpy.zeros((sizeX, sizeY))
+    Ez = numpy.zeros((sizeX, sizeY))
 
     # Параметры среды
     # Диэлектрическая проницаемость среды
@@ -88,70 +87,77 @@ if __name__ == '__main__':
     loss_m = sigma_m * dt / (2 * mu * mu0)
     loss = sigma * dt / (2 * eps * eps0)
 
-    Chzh = (1 - loss_m) / (1 + loss_m)
+    Chxh = ((1 - sigma_m * dt / (2 * mu * mu0)) /
+            (1 + sigma_m * dt / (2 * mu * mu0)))
 
-    Chze = 1 / (1 + loss_m) * (dt / (mu * mu0 * d))
+    Chxe = 1 / (1 + (sigma_m * dt / (2 * mu * mu0))) * dt / (mu * mu0 * d)
 
-    Cexe = (1 - loss) / (1 + loss)
+    Chyh = Chxh
+    Chye = Chxe
 
-    Cexh = 1 / (1 + loss) * (dt / (eps * eps0 * d))
+    Ceze = ((1 - sigma * dt / (2 * eps * eps0)) /
+            (1 + sigma * dt / (2 * eps * eps0)))
 
-    Ceye = Cexe
-    Ceyh = Cexh
+    Cezh = (1 / (1 + (sigma * dt / (2 * eps * eps0))) *
+            dt / (eps * eps0 * d))
 
     # Какую компоненту поля будем отображать
-    visualize_field = Ey
+    visualize_field = Ez
 
     # Поле, зарегистрированное в датчике в зависимости от времени
-    probeTimeEx = numpy.zeros(maxTime)
-    probeTimeEy = numpy.zeros(maxTime)
-    probeTimeHz = numpy.zeros(maxTime)
+    probeTimeHx = numpy.zeros(maxTime)
+    probeTimeHy = numpy.zeros(maxTime)
+    probeTimeEz = numpy.zeros(maxTime)
 
     plt.ion()
     fig = plt.figure()
 
     for t in range(maxTime):
-        Hz[:-1, :-1] = (Chzh[:-1, :-1] * Hz[:-1, :-1] +
-                        Chze[:-1, :-1] * (Ex[:-1, 1:] - Ex[:-1, :-1] -
-                                          (Ey[1:, :-1] - Ey[:-1, :-1])))
+        Hx[:, :-1] = (Chxh[:, :-1] * Hx[:, :-1] -
+                      Chxe[:, :-1] * (Ez[:, 1:] - Ez[:, :-1]))
 
-        Ex[:-1, 1:-1] = (Cexe[:-1, 1:-1] * Ex[:-1, 1:-1] +
-                         Cexh[:-1, 1:-1] * (Hz[:-1, 1:-1] - Hz[:-1, :-2]))
+        Hy[:-1, :] = (Chyh[:-1, :] * Hy[:-1, :] +
+                      Chye[:-1, :] * (Ez[1:, :] - Ez[:-1, :]))
 
-        Ey[1:-1, :-1] = (Ceye[1:-1, :-1] * Ey[1:-1, :-1] -
-                         Ceyh[1:-1, :-1] * (Hz[1:-1, :-1] - Hz[:-2, :-1]))
+        Ez[1:-1, 1:-1] = (Ceze[1:-1, 1:-1] * Ez[1:-1, 1:-1] +
+                          Cezh[1:-1, 1:-1] * ((Hy[1:-1, 1:-1] - Hy[:-2, 1:-1]) -
+                                              (Hx[1:-1, 1:-1] - Hx[1:-1, :-2])))
 
-        Hz[port_x, port_y] += numpy.sin(2 * numpy.pi * t / wavelength + phi_0)
+        Ez[port_x, 1:-2] += numpy.exp(-(t - gauss_delay) ** 2 / (gauss_width ** 2))
 
-        probeTimeEx[t] = Ex[probe_x, probe_y]
-        probeTimeEy[t] = Ey[probe_x, probe_y]
-        probeTimeHz[t] = Hz[probe_x, probe_y]
+        probeTimeHx[t] = Hx[probe_x, probe_y]
+        probeTimeHy[t] = Hy[probe_x, probe_y]
+        probeTimeEz[t] = Ez[probe_x, probe_y]
 
         if t % 2 == 0:
             plt.clf()
-            plt.imshow(Ex.transpose(), vmin=-100.0, vmax=100.0, cmap='jet')
+            plt.imshow(visualize_field.transpose(),
+                       vmin=-1,
+                       vmax=1,
+                       cmap='jet')
             plt.scatter([probe_x], [probe_y], marker='x')
             plt.draw()
             plt.pause(0.01)
 
     plt.ioff()
     plt.figure()
+
     plt.subplot(3, 1, 1)
-    plt.plot(probeTimeEx, 'r')
+    plt.plot(probeTimeEz, 'r')
     plt.xlabel('t, отсчет')
-    plt.ylabel('Ex, В/м')
+    plt.ylabel('Ez, В/м')
     plt.grid()
 
     plt.subplot(3, 1, 2)
-    plt.plot(probeTimeEy, 'r')
+    plt.plot(probeTimeHx, 'b')
     plt.xlabel('t, отсчет')
-    plt.ylabel('Ey, В/м')
+    plt.ylabel('Hx, А/м')
     plt.grid()
 
     plt.subplot(3, 1, 3)
-    plt.plot(probeTimeHz, 'b')
+    plt.plot(probeTimeHy, 'b')
     plt.xlabel('t, отсчет')
-    plt.ylabel('Hz, А/м')
+    plt.ylabel('Hy, А/м')
     plt.grid()
 
     plt.show()

@@ -23,12 +23,12 @@ layer_x = 100;
 Ez = zeros (1, maxSize);
 Hy = zeros (1, maxSize - 1);
 
+eps = ones (size (Ez));
+eps(layer_x: end) = 9.0;
+
 % Потери в среде. loss = sigma * dt / (2 * eps * eps0)
 loss = zeros (1, maxSize);
 loss(layer_x: end) = 0.01;
-
-eps = ones (size (Ez));
-eps(layer_x: end) = 9.0;
 
 ceze = (1 - loss) ./ (1 + loss);
 cezh = W0 ./ (eps .* (1 + loss));
@@ -71,7 +71,7 @@ for t = 1: maxTime
     % Регистрация поля в датчиках
     for p = 1:size(probePos, 2)
         probeTimeEz(p, t) = Ez(probePos(p));
-    end;
+    end
     
     plot (Ez);
     xlim ([1, maxSize]);

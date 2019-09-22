@@ -32,7 +32,7 @@ function reflection_error
     legend (legends, 'Location','southeast');
     hold off
     xlabel ('$$N_\lambda$$', 'Interpreter','latex', 'FontSize', 14)
-    ylabel ('|Г|', 'FontSize', 14)
+    ylabel ('Г', 'FontSize', 14)
 end
 
 
