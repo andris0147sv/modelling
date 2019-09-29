@@ -24,11 +24,15 @@ if __name__ == '__main__':
     # Положение датчика, регистрирующего поля
     probePos = 50
 
+    # Положение источника
+    sourcePos = 75
+
     Ez = numpy.zeros(maxSize)
     Hy = numpy.zeros(maxSize)
 
     # Поле, зарегистрированное в датчике в зависимости от времени
     probeTimeEz = numpy.zeros(maxTime)
+    probeTimeEz[0] = Ez[probePos]
 
     # Подготовка к отображению поля в пространстве
     xlist = numpy.arange(maxSize)
@@ -53,10 +57,13 @@ if __name__ == '__main__':
     # Отобразить поле в начальный момент времени
     line, = ax.plot(xlist, Ez)
 
+    # Отобразить положение источника
+    ax.plot(sourcePos, 0, 'ok')
+
     # Отобразить положение пробника
     ax.plot(probePos, 0, 'xr')
 
-    for t in range(maxTime):
+    for t in range(1, maxTime):
         # Расчет компоненты поля H
         for x in range(0, maxSize - 1):
             Hy[x] = Hy[x] + (Ez[x + 1] - Ez[x]) * Sc / W0
@@ -66,7 +73,7 @@ if __name__ == '__main__':
             Ez[x] = Ez[x] + (Hy[x] - Hy[x - 1]) * Sc * W0
 
         # Источник возбуждения
-        Ez[0] = numpy.exp(-(t - 30.0) ** 2 / 100.0)
+        Ez[sourcePos] += numpy.exp(-(t - 0.5 - 30.0) ** 2 / 100.0)
 
         # Регистрация поля в точке
         probeTimeEz[t] = Ez[probePos]

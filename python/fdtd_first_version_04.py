@@ -34,6 +34,7 @@ class AnimateFieldDisplay:
         self._xlabel = 'x, отсчет'
         self._ylabel = yLabel
         self._probeStyle = 'xr'
+        self._sourceStyle = 'ok'
 
     def activate(self):
         '''
@@ -68,6 +69,15 @@ class AnimateFieldDisplay:
         '''
         # Отобразить положение пробника
         self._ax.plot(probesPos, [0] * len(probesPos), self._probeStyle)
+
+    def drawSources(self, sourcesPos: List[int]):
+        '''
+        Нарисовать источники.
+
+        sourcesPos - список координат источников (в отсчетах).
+        '''
+        # Отобразить положение пробника
+        self._ax.plot(sourcesPos, [0] * len(sourcesPos), self._sourceStyle)
 
     def stop(self):
         '''
@@ -122,19 +132,24 @@ if __name__ == '__main__':
     # Положение датчика, регистрирующего поля
     probePos = 50
 
+    # Положение источника
+    sourcePos = 75
+
     Ez = numpy.zeros(maxSize)
     Hy = numpy.zeros(maxSize)
 
     # Поле, зарегистрированное в датчике в зависимости от времени
     probeTimeEz = numpy.zeros(maxTime)
+    probeTimeEz[0] = Ez[probePos]
 
     # Создание экземпляра класса для отображения
     # распределения поля в пространстве
     display = AnimateFieldDisplay(maxSize, -1.1, 1.1, 'Ez, В/м')
     display.activate()
+    display.drawSources([sourcePos])
     display.drawProbes([probePos])
 
-    for t in range(maxTime):
+    for t in range(1, maxTime):
         # Расчет компоненты поля H
         Ez_shift = Ez[1:]
         Hy[:-1] = Hy[:-1] + (Ez_shift - Ez[:-1]) * Sc / W0
@@ -144,7 +159,7 @@ if __name__ == '__main__':
         Ez[1:] = Ez[1:] + (Hy[1:] - Hy_shift) * Sc * W0
 
         # Источник возбуждения
-        Ez[0] = numpy.exp(-(t - 30.0) ** 2 / 100.0)
+        Ez[sourcePos] += numpy.exp(-(t - 0.5 - 30.0) ** 2 / 100.0)
 
         # Регистрация поля в точке
         probeTimeEz[t] = Ez[probePos]

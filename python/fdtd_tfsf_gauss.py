@@ -32,6 +32,9 @@ if __name__ == '__main__':
     Ez = numpy.zeros(maxSize)
     Hy = numpy.zeros(maxSize)
 
+    for probe in probes:
+        probe.addData(Ez, Hy)
+
     # Параметры отображения поля E
     display_field = Ez
     display_ylabel = 'Ez, В/м'
@@ -48,7 +51,7 @@ if __name__ == '__main__':
     display.drawProbes(probesPos)
     display.drawSources([sourcePos])
 
-    for t in range(maxTime):
+    for t in range(1, maxTime):
         # Граничные условия для поля H
         Hy[-1] = Hy[-2]
 
