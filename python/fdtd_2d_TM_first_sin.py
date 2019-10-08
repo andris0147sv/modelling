@@ -133,9 +133,9 @@ if __name__ == '__main__':
         if t % 2 == 0:
             plt.clf()
             plt.imshow(visualize_field.transpose(),
-                         vmin=-0.1,
-                         vmax=0.1,
-                         cmap='jet')
+                       vmin=-0.1,
+                       vmax=0.1,
+                       cmap='jet')
             plt.draw()
             plt.pause(0.01)
 
