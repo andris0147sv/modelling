@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 '''
-Модуль со вспомогательными классами и функциями, несвязанные напрямую с 
+Модуль со вспомогательными классами и функциями, не связанные напрямую с
 методом FDTD
 '''
 
@@ -112,8 +112,8 @@ class AnimateFieldDisplay:
         position - координата X границы (в отсчетах).
         '''
         self._ax.plot([position, position],
-                [self.minYSize, self.maxYSize],
-                '--k')
+                      [self.minYSize, self.maxYSize],
+                      '--k')
 
     def stop(self):
         '''
