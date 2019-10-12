@@ -17,13 +17,13 @@ if __name__ == '__main__':
     Sc = 1.0
 
     # Время расчета в отсчетах
-    maxTime = 1000
+    maxTime = 2000
 
     # Размер области моделирования в отсчетах
     maxSize = 250
 
     # Датчики для регистрации поля
-    probesPos = [60, 110, 160]
+    probesPos = [25]
     probes = [tools.Probe(pos, maxTime) for pos in probesPos]
 
     # Левая граница TFSF

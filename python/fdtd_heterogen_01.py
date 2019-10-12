@@ -68,10 +68,6 @@ if __name__ == '__main__':
         Ez_shift = Ez[1:]
         Hy[:-1] = Hy[:-1] + (Ez_shift - Ez[:-1]) * Sc / (W0 * mu[:-1])
 
-        # Источник возбуждения с использованием метода
-        # Total Field / Scattered Field
-        Hy[sourcePos - 1] -= numpy.exp(-(t - 30.0) ** 2 / 100.0) / W0
-
         # Граничные условия для поля E
         Ez[0] = Ez[1]
 
@@ -79,9 +75,8 @@ if __name__ == '__main__':
         Hy_shift = Hy[:-1]
         Ez[1:] = Ez[1:] + (Hy[1:] - Hy_shift) * Sc * W0 / eps[1:]
 
-        # Источник возбуждения с использованием метода
-        # Total Field / Scattered Field
-        Ez[sourcePos] += numpy.exp(-((t + 0.5) - (-0.5) - 30.0) ** 2 / 100.0)
+        # Источник возбуждения
+        Ez[sourcePos] += numpy.exp(-(t - 0.5 - 30.0) ** 2 / 100.0)
 
         # Регистрация поля в датчиках
         for probe in probes:
