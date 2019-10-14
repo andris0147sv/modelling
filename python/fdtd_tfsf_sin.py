@@ -68,7 +68,8 @@ if __name__ == '__main__':
 
         # Источник возбуждения с использованием метода
         # Total Field / Scattered Field
-        Hy[sourcePos - 1] -= numpy.sin(2 * numpy.pi * t / Nl + phi_0) / W0
+        Hy[sourcePos - 1] -= (Sc / (W0 * mu[sourcePos - 1]) *
+                              numpy.sin(2 * numpy.pi * t / Nl + phi_0))
 
         Ez[0] = Ez[1]
         Ez[-1] = Ez[-2]
@@ -79,7 +80,8 @@ if __name__ == '__main__':
 
         # Источник возбуждения с использованием метода
         # Total Field / Scattered Field
-        Ez[sourcePos] += numpy.sin(2 * numpy.pi * (t + 0.5 - (-0.5)) / Nl + phi_0)
+        Ez[sourcePos] += (Sc / (numpy.sqrt(eps[sourcePos] * mu[sourcePos])) *
+                          numpy.sin(2 * numpy.pi * (t + 0.5 - (-0.5)) / Nl + phi_0))
 
         # Регистрация поля в датчиках
         for probe in probes:

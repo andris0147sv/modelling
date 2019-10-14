@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 '''
 Метод полного поля / рассеянного поля. Две границы.
-Моделирование распространения ЭМ волны, пащающей на диэлектрический слой.
+Моделирование распространения ЭМ волны, падающей на диэлектрический слой.
 '''
 
 import numpy
@@ -71,8 +71,8 @@ if __name__ == '__main__':
 
         # Источник возбуждения с использованием метода
         # Total Field / Scattered Field
-        Hy[tfsf_left - 1] -= numpy.exp(-(t - 30.0 - (tfsf_left - tfsf_left)) ** 2 / 100.0) / W0
-        Hy[tfsf_right - 1] += numpy.exp(-(t - 30.0 - (tfsf_right - tfsf_left)) ** 2 / 100.0) / W0
+        Hy[tfsf_left - 1] -= Sc / (W0 * mu[tfsf_left - 1]) * numpy.exp(-(t - 30.0 - (tfsf_left - tfsf_left)) ** 2 / 100.0)
+        Hy[tfsf_right - 1] += Sc / (W0 * mu[tfsf_right - 1]) * numpy.exp(-(t - 30.0 - (tfsf_right - tfsf_left)) ** 2 / 100.0)
 
         # Граничные условия для поля E
         Ez[0] = Ez[1]
@@ -84,8 +84,8 @@ if __name__ == '__main__':
 
         # Источник возбуждения с использованием метода
         # Total Field / Scattered Field
-        Ez[tfsf_left] += numpy.exp(-(t + 0.5 - (tfsf_left - tfsf_left - 0.5) - 30.0) ** 2 / 100.0)
-        Ez[tfsf_right] -= numpy.exp(-(t + 0.5 - (tfsf_right - tfsf_left - 0.5) - 30.0) ** 2 / 100.0)
+        Ez[tfsf_left] += Sc / (numpy.sqrt(eps[tfsf_left] * mu[tfsf_left])) * numpy.exp(-(t + 0.5 - (tfsf_left - tfsf_left - 0.5) - 30.0) ** 2 / 100.0)
+        Ez[tfsf_right] -= Sc / (numpy.sqrt(eps[tfsf_right] * mu[tfsf_right])) * numpy.exp(-(t + 0.5 - (tfsf_right - tfsf_left - 0.5) - 30.0) ** 2 / 100.0)
 
         # Регистрация поля в датчиках
         for probe in probes:

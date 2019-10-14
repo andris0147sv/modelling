@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 '''
-Моделирование распространения ЭМ волны, пащающей на границу
+Моделирование распространения ЭМ волны, падающей на границу
 вакуум - идеальный диэлектрик.
 Используются граничные условия ABC первой степени.
 '''
@@ -45,7 +45,7 @@ if __name__ == '__main__':
     Hy = numpy.zeros(maxSize - 1)
 
     # Ez[1] в предыдущий момент времени
-    oldEzLeft = 0;
+    oldEzLeft = 0
 
     # Ez[-2] в предыдущий момент времени
     oldEzRight = 0
@@ -80,7 +80,8 @@ if __name__ == '__main__':
 
         # Источник возбуждения с использованием метода
         # Total Field / Scattered Field
-        Hy[sourcePos - 1] -= numpy.exp(-(t - 30.0) ** 2 / 100.0) / W0
+        Hy[sourcePos - 1] -= (Sc / (W0 * mu[sourcePos - 1]) *
+                              numpy.exp(-(t - 30.0) ** 2 / 100.0))
 
         # Расчет компоненты поля E
         Hy_shift = Hy[: -1]
@@ -88,7 +89,8 @@ if __name__ == '__main__':
 
         # Источник возбуждения с использованием метода
         # Total Field / Scattered Field
-        Ez[sourcePos] += numpy.exp(-((t + 0.5) - (-0.5) - 30.0) ** 2 / 100.0)
+        Ez[sourcePos] += (Sc / (numpy.sqrt(eps[sourcePos] * mu[sourcePos])) *
+                          numpy.exp(-((t + 0.5) - (-0.5 * numpy.sqrt(eps[sourcePos] * mu[sourcePos]) / Sc) - 30.0) ** 2 / 100.0))
 
         # Граничные условия ABC первой степени
         Ez[0] = oldEzLeft + koeffABCLeft * (Ez[1] - Ez[0])
