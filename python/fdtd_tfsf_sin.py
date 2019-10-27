@@ -29,8 +29,8 @@ if __name__ == '__main__':
     # Количество ячеек на длину волны
     Nl = 50
 
-    phi_0 = 0
-    # phi_0 = -2 * numpy.pi / Nl
+    phi_0 = -2 * numpy.pi / Nl
+    # phi_0 = 0
 
     # Датчики для регистрации поля
     probesPos = [60]
@@ -49,8 +49,8 @@ if __name__ == '__main__':
     # Параметры отображения поля E
     display_field = Ez
     display_ylabel = 'Ez, В/м'
-    display_ymin = -1.1
-    display_ymax = 1.1
+    display_ymin = -2.1
+    display_ymax = 2.1
 
     # Создание экземпляра класса для отображения
     # распределения поля в пространстве
@@ -62,7 +62,7 @@ if __name__ == '__main__':
     display.drawProbes(probesPos)
     display.drawSources([sourcePos])
 
-    for t in range(maxTime):
+    for t in range(1, maxTime):
         # Расчет компоненты поля H
         Hy = Hy + (Ez[1:] - Ez[:-1]) * Sc / (W0 * mu)
 
@@ -93,4 +93,4 @@ if __name__ == '__main__':
     display.stop()
 
     # Отображение сигнала, сохраненного в пробнике
-    tools.showProbeSignals(probes, -1.1, 1.1)
+    tools.showProbeSignals(probes, -2.1, 2.1)

@@ -45,10 +45,10 @@ if __name__ == '__main__':
     Hy = numpy.zeros(maxSize - 1)
 
     # Ez[1] в предыдущий момент времени
-    oldEzLeft = 0
+    oldEzLeft = Ez[1]
 
     # Ez[-2] в предыдущий момент времени
-    oldEzRight = 0
+    oldEzRight = Ez[-2]
 
     # Расчет коэффициентов для граничных условий
     tempLeft = Sc / numpy.sqrt(mu[0] * eps[0])

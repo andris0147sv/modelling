@@ -31,7 +31,7 @@ time = np.arange(0, size * dt, dt)
 gauss = np.sin(2 * np.pi * f_0 * time) * np.exp(-((time - d_g) / w_g) ** 2)
 
 # Расчет спектра
-spectrum = fft(gauss)
+spectrum = np.abs(fft(gauss))
 spectrum = fftshift(spectrum)
 
 # Расчет частоты
@@ -47,10 +47,10 @@ plt.ylabel('Ez')
 
 # Отображение спектра
 plt.subplot(1, 2, 2)
-plt.plot(freq, np.abs(spectrum))
+plt.plot(freq, spectrum / np.max(spectrum))
 plt.grid()
 plt.xlabel('Частота, Гц')
-plt.ylabel('|P|')
+plt.ylabel('|S| / |Smax|')
 plt.xlim(0, 10e9)
 
 plt.subplots_adjust(wspace=0.3)

@@ -28,7 +28,7 @@ impulse = ((1 - 2 * (np.pi * fp * (time - dr)) ** 2) *
            np.exp(-(np.pi * fp * (time - dr)) ** 2))
 
 # Расчет спектра
-spectrum = fft(impulse)
+spectrum = np.abs(fft(impulse))
 spectrum = fftshift(spectrum)
 
 # Расчет частоты
@@ -44,10 +44,10 @@ plt.ylabel('Ez')
 
 # Отображение спектра
 plt.subplot(1, 2, 2)
-plt.plot(freq, np.abs(spectrum))
+plt.plot(freq, spectrum / np.max(spectrum))
 plt.grid()
 plt.xlabel('Частота, Гц')
-plt.ylabel('|P|')
+plt.ylabel('|S| / |Smax|')
 plt.xlim(0, 5e9)
 
 plt.subplots_adjust(wspace=0.4)
