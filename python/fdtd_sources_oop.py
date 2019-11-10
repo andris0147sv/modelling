@@ -93,7 +93,7 @@ if __name__ == '__main__':
     display.drawSources([sourcePos])
     display.drawProbes(probesPos)
 
-    for t in range(maxTime):
+    for t in range(1, maxTime):
         # Расчет компоненты поля H
         Hy = Hy + (Ez[1:] - Ez[:-1]) * Sc / (W0 * mu)
 

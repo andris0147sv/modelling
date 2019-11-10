@@ -72,7 +72,7 @@ if __name__ == '__main__':
                               numpy.sin(2 * numpy.pi * t / Nl + phi_0))
 
         Ez[0] = Ez[1]
-        Ez[-1] = Ez[-2]
+        # Ez[-1] = Ez[-2]
 
         # Расчет компоненты поля E
         Hy_shift = Hy[:-1]

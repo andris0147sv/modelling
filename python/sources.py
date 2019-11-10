@@ -87,7 +87,7 @@ class Harmonic(Source1D):
     Источник, создающий гармонический сигнал
     '''
 
-    def __init__(self, magnitude, Nl, Sc, phi_0=0.0):
+    def __init__(self, magnitude, Nl, Sc, phi_0=None):
         '''
         magnitude - максимальное значение в источнике;
         Nl - количество отсчетов на длину волны;
@@ -96,7 +96,11 @@ class Harmonic(Source1D):
         self.magnitude = magnitude
         self.Nl = Nl
         self.Sc = Sc
-        self.phi_0 = phi_0
+
+        if phi_0 is None:
+            self.phi_0 = -2 * np.pi / Nl
+        else:
+            self.phi_0 = phi_0
 
     def getField(self, time):
         return self.magnitude * np.sin(2 * np.pi * self.Sc * time / self.Nl + self.phi_0)

@@ -18,7 +18,7 @@ if __name__ == '__main__':
     c = 299792458.0
 
     # Число Куранта
-    Sc = 0.7
+    Sc = 0.9
 
     # Время расчета в отсчетах
     maxTime = 1024
@@ -31,7 +31,8 @@ if __name__ == '__main__':
 
     # Положения датчиков
     probe1Pos = 1300
-    probe2Pos = 1350
+    # probe2Pos = 1350
+    probe2Pos = 1500
 
     # Расстояние между датчиками
     probeDist = probe2Pos - probe1Pos
@@ -73,13 +74,13 @@ if __name__ == '__main__':
         Ez[1:] = Ez[1:] + (Hy[1:] - Hy_shift) * Sc * W0
 
         # Источник возбуждения
-        Ez[sourcePos] += numpy.exp(-(t - 30.0) ** 2 / 100.0) * Sc
+        Ez[sourcePos] += numpy.exp(-(t - 30.0) ** 2 / (5.0 ** 2)) * Sc
 
         # Регистрация поля в датчиках
         for probe in probes:
             probe.addData(Ez, Hy)
 
-        if t % 2 == 0:
+        if t % 10 == 0:
             display.updateData(display_field, t)
 
     display.stop()
@@ -94,7 +95,7 @@ if __name__ == '__main__':
         spectrum_abs = numpy.abs(spectrum)
         spectrum_phase = numpy.unwrap(numpy.angle(spectrum))
 
-        # Расчет фазы в вычтенным линейным членом
+        # Расчет фазы с вычтенным линейным членом
         k = spectrum_phase[k_index] / k_index
         spectrum_phase_line = spectrum_phase - \
             k * numpy.arange(0, len(spectrum_phase))
@@ -131,7 +132,7 @@ if __name__ == '__main__':
         plt.xlabel('f')
         plt.ylabel('Phase(Ez), рад.')
         plt.xlim(0, 300)
-        plt.ylim(-4, 4)
+        plt.ylim(-5, 5)
         plt.grid()
         plt.legend()
 

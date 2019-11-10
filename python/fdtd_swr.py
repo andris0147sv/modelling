@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 '''
-Пример демонстрации использования источников в стиле ООП.
-Используется метод TFSF.
-Граничные условия - ABC второй степени.
+Моделирование распространения ЭМ волны, падающей на границу
+вакуум - идеальный диэлектрик.
+Используются граничные условия ABC второй степени.
 '''
 
 import numpy
 
 import tools
-import sources
 
 
 if __name__ == '__main__':
@@ -19,22 +18,31 @@ if __name__ == '__main__':
     Sc = 1.0
 
     # Время расчета в отсчетах
-    maxTime = 750
+    maxTime = 1000
 
     # Размер области моделирования в отсчетах
-    maxSize = 200
+    maxSize = 300
+
+    # Положение источника в отсчетах
+    sourcePos = 10
 
     # Датчики для регистрации поля
-    probesPos = [160]
+    probesPos = [220]
     probes = [tools.Probe(pos, maxTime) for pos in probesPos]
 
     # Положение начала диэлектрика
-    layer_x = 0
+    layer_x = 250
+
+    # Количество отсчетов на длину волны
+    Nl = 50
+
+    # Начальная фаза
+    phi_0 = -2 * numpy.pi / Nl
 
     # Параметры среды
     # Диэлектрическая проницаемость
     eps = numpy.ones(maxSize)
-    eps[layer_x:] = 9.0
+    eps[layer_x:] = 2.0
 
     # Магнитная проницаемость
     mu = numpy.ones(maxSize - 1)
@@ -71,27 +79,11 @@ if __name__ == '__main__':
     # Ez[-3: -1] в пред-предыдущий момент времени (q - 1)
     oldEzRight2 = numpy.zeros(3)
 
-    # Создание источников
-    # Положение источника в отсчетах
-    sourcePos = 50
-
-    # Создание источника гауссова импульса для метода TFSF
-    mag_H = -Sc / (W0 * mu[sourcePos - 1])
-    dg_H = 30.0
-    wg_H = 10.0
-
-    mag_E = Sc / (numpy.sqrt(eps[sourcePos] * mu[sourcePos]))
-    dg_E = (-0.5 * numpy.sqrt(eps[sourcePos] * mu[sourcePos]) / Sc) + dg_H
-    wg_E = wg_H
-
-    source_tfsf_E = sources.Gaussian(mag_E, dg_E, wg_E)
-    source_tfsf_H = sources.Gaussian(mag_H, dg_H, wg_H)
-
     # Параметры отображения поля E
     display_field = Ez
     display_ylabel = 'Ez, В/м'
-    display_ymin = -1.1
-    display_ymax = 1.1
+    display_ymin = -2.1
+    display_ymax = 2.1
 
     # Создание экземпляра класса для отображения
     # распределения поля в пространстве
@@ -110,7 +102,8 @@ if __name__ == '__main__':
 
         # Источник возбуждения с использованием метода
         # Total Field / Scattered Field
-        Hy[sourcePos - 1] += source_tfsf_H.getField(t)
+        Hy[sourcePos - 1] -= (Sc / (W0 * mu[sourcePos - 1]) *
+                              numpy.sin(2 * numpy.pi * t / Nl + phi_0))
 
         # Расчет компоненты поля E
         Hy_shift = Hy[: -1]
@@ -118,7 +111,8 @@ if __name__ == '__main__':
 
         # Источник возбуждения с использованием метода
         # Total Field / Scattered Field
-        Ez[sourcePos] += source_tfsf_E.getField(t + 0.5)
+        Ez[sourcePos] += (Sc / (numpy.sqrt(eps[sourcePos] * mu[sourcePos])) *
+                          numpy.sin(2 * numpy.pi * (t + 0.5 - (-0.5)) / Nl + phi_0))
 
         # Граничные условия ABC второй степени (слева)
         Ez[0] = (k1Left * (k2Left * (Ez[2] + oldEzLeft2[0]) +
@@ -146,4 +140,4 @@ if __name__ == '__main__':
     display.stop()
 
     # Отображение сигнала, сохраненного в пробнике
-    tools.showProbeSignals(probes, -1.1, 1.1)
+    tools.showProbeSignals(probes, -2.1, 2.1)
