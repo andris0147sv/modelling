@@ -93,7 +93,7 @@ class AnimateFieldDisplay:
         probesPos - список координат пробников для регистрации временных
             сигналов (в отсчетах).
         '''
-        # Отобразить положение пробника
+        # Отобразить положение пробников
         self._ax.plot(probesPos, [0] * len(probesPos), self._probeStyle)
 
     def drawSources(self, sourcesPos: List[int]):
@@ -102,7 +102,7 @@ class AnimateFieldDisplay:
 
         sourcesPos - список координат источников (в отсчетах).
         '''
-        # Отобразить положение пробника
+        # Отобразить положение источников
         self._ax.plot(sourcesPos, [0] * len(sourcesPos), self._sourceStyle)
 
     def drawBoundary(self, position: int):
