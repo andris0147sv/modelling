@@ -21,7 +21,7 @@ if __name__ == '__main__':
     # Положение точечного источника в метрах
     port_x_m = 0.15
 
-    # Положение пробника в метрах
+    # Положение датчика в метрах
     probe_x_m = 0.12
     probe_y_m = 0.08
 
@@ -58,7 +58,7 @@ if __name__ == '__main__':
     # Положение точки возбуждения
     port_x = int(numpy.ceil(port_x_m / d))
 
-    # Положение пробника
+    # Положение датчика
     probe_x = int(numpy.ceil(probe_x_m / d))
     probe_y = int(numpy.ceil(probe_y_m / d))
 

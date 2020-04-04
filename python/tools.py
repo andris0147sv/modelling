@@ -11,12 +11,12 @@ from typing import List
 
 class Probe:
     '''
-    Класс для хранения временного сигнала в пробнике.
+    Класс для хранения временного сигнала в датчике.
     '''
     def __init__(self, position: int, maxTime: int):
         '''
-        position - положение пробника (номер ячейки).
-        maxTime - максимально количество временных шагов для хранения в пробнике.
+        position - положение датчика (номер ячейки).
+        maxTime - максимально количество временных шагов для хранения в датчике.
         '''
         self.position = position
 
@@ -29,7 +29,7 @@ class Probe:
 
     def addData(self, E: List[float], H: List[float]):
         '''
-        Добавить данные по полям E и H в пробник.
+        Добавить данные по полям E и H в датчик.
         '''
         self.E[self._time] = E[self.position]
         self.H[self._time] = H[self.position]
@@ -88,12 +88,12 @@ class AnimateFieldDisplay:
 
     def drawProbes(self, probesPos: List[int]):
         '''
-        Нарисовать пробники.
+        Нарисовать датчики.
 
-        probesPos - список координат пробников для регистрации временных
+        probesPos - список координат датчиков для регистрации временных
             сигналов (в отсчетах).
         '''
-        # Отобразить положение пробников
+        # Отобразить положение датчиков
         self._ax.plot(probesPos, [0] * len(probesPos), self._probeStyle)
 
     def drawSources(self, sourcesPos: List[int]):

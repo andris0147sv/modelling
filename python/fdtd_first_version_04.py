@@ -64,10 +64,10 @@ class AnimateFieldDisplay:
 
     def drawProbes(self, probesPos: List[int]):
         '''
-        probesPos - список координат пробников для регистрации временных
+        probesPos - список координат датчиков для регистрации временных
             сигналов.
         '''
-        # Отобразить положение пробника
+        # Отобразить положение датчика
         self._ax.plot(probesPos, [0] * len(probesPos), self._probeStyle)
 
     def drawSources(self, sourcesPos: List[int]):
@@ -76,7 +76,7 @@ class AnimateFieldDisplay:
 
         sourcesPos - список координат источников (в отсчетах).
         '''
-        # Отобразить положение пробника
+        # Отобразить положение датчика
         self._ax.plot(sourcesPos, [0] * len(sourcesPos), self._sourceStyle)
 
     def stop(self):
@@ -169,5 +169,5 @@ if __name__ == '__main__':
 
     display.stop()
 
-    # Отображение сигнала, сохраненного в пробнике
+    # Отображение сигнала, сохраненного в датчике
     showProbeSignals([probeTimeEz], -1.1, 1.1)

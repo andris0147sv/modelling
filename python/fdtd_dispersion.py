@@ -85,7 +85,7 @@ if __name__ == '__main__':
 
     display.stop()
 
-    # Отображение сигналов и их спектров, зарегистрированных в пробниках
+    # Отображение сигналов и их спектров, зарегистрированных в датчиках
     plt.figure()
     plt.suptitle('Сигналы в датчиках')
 
@@ -102,7 +102,7 @@ if __name__ == '__main__':
 
         # Отображение сигнала в датчике
         plt.subplot(4, 1, 1)
-        plt.plot(EzField, label='Пробник N {}'.format(n + 1))
+        plt.plot(EzField, label='датчик N {}'.format(n + 1))
         plt.xlabel('t, отсчет')
         plt.ylabel('Ez, В/м')
         plt.grid()
@@ -110,7 +110,7 @@ if __name__ == '__main__':
 
         # Амплитудный спектр сигнала в датчике
         plt.subplot(4, 1, 2)
-        plt.plot(spectrum_abs, label='Пробник N {}'.format(n + 1))
+        plt.plot(spectrum_abs, label='датчик N {}'.format(n + 1))
         plt.xlabel('f')
         plt.ylabel('|Ez|, В/(м*Гц)')
         plt.xlim(0, 300)
@@ -119,7 +119,7 @@ if __name__ == '__main__':
 
         # Фазовый спектр сигнала в датчике без вычитания линейного члена
         plt.subplot(4, 1, 3)
-        plt.plot(spectrum_phase, label='Пробник N {}'.format(n + 2))
+        plt.plot(spectrum_phase, label='датчик N {}'.format(n + 2))
         plt.xlabel('f')
         plt.ylabel('Phase(Ez), рад.')
         plt.xlim(0, 300)
@@ -128,7 +128,7 @@ if __name__ == '__main__':
 
         # Фазовый спектр сигнала в датчике
         plt.subplot(4, 1, 4)
-        plt.plot(spectrum_phase_line, label='Пробник N {}'.format(n + 2))
+        plt.plot(spectrum_phase_line, label='датчик N {}'.format(n + 2))
         plt.xlabel('f')
         plt.ylabel('Phase(Ez), рад.')
         plt.xlim(0, 300)
@@ -136,19 +136,19 @@ if __name__ == '__main__':
         plt.grid()
         plt.legend()
 
-    # Сигнал и спектр в первом пробнике
+    # Сигнал и спектр в первом датчике
     EzField_0 = probes[0].E
     spectrum_0 = fft(EzField_0)
     spectrum_0_phase = numpy.unwrap(numpy.angle(spectrum_0))
 
-    # Сигнал и спектр во втором пробнике
+    # Сигнал и спектр во втором датчике
     EzField_1 = probes[1].E
     spectrum_1 = fft(EzField_1)
     spectrum_1_phase = numpy.unwrap(numpy.angle(spectrum_1))
 
     phase_delta = numpy.abs(spectrum_1_phase - spectrum_0_phase)
 
-    # Коэффициент прохождения среды между двумя пробниками
+    # Коэффициент прохождения среды между двумя датчиками
     R = spectrum_1 / spectrum_0
     R_abs = numpy.abs(R)
     R_phase = numpy.unwrap(numpy.angle(R))

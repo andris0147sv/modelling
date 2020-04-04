@@ -22,7 +22,7 @@ if __name__ == '__main__':
     port_x_m = 0.15
     port_y_m = 0.1
 
-    # Положение пробника в метрах
+    # Положение датчика в метрах
     probe_x_m = 0.12
     probe_y_m = 0.08
 
@@ -60,7 +60,7 @@ if __name__ == '__main__':
     port_x = int(numpy.ceil(port_x_m / d))
     port_y = int(numpy.ceil(port_y_m / d))
 
-    # Положение пробника
+    # Положение датчика
     probe_x = int(numpy.ceil(probe_x_m / d))
     probe_y = int(numpy.ceil(probe_y_m / d))
 

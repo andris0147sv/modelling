@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 '''
 История изменений:
-    * Работа с пробниками вынесена в класс Probe.
+    * Работа с датчиками вынесена в класс Probe.
     * Рисование графиков вынесено в класс AnimateFieldDisplay и функцию showProbeSignals.
     * Циклы по пространству заменены на поэлементные операции с массивами.
     * Добавлена анимация поля E.
@@ -15,13 +15,13 @@ from typing import List
 
 class Probe:
     '''
-    Класс для хранения временного сигнала в пробнике.
+    Класс для хранения временного сигнала в датчике.
     '''
 
     def __init__(self, position: int, maxTime: int):
         '''
-        position - положение пробника (номер ячейки).
-        maxTime - максимально количество временных шагов для хранения в пробнике.
+        position - положение датчика (номер ячейки).
+        maxTime - максимально количество временных шагов для хранения в датчике.
         '''
         self.position = position
 
@@ -34,7 +34,7 @@ class Probe:
 
     def addData(self, E: List[float], H: List[float]):
         '''
-        Добавить данные по полям E и H в пробник.
+        Добавить данные по полям E и H в датчик.
         '''
         self.E[self._time] = E[self.position]
         self.H[self._time] = H[self.position]
@@ -93,10 +93,10 @@ class AnimateFieldDisplay:
 
     def drawProbes(self, probesPos: List[int]):
         '''
-        probesPos - список координат пробников для регистрации временных
+        probesPos - список координат датчиков для регистрации временных
             сигналов.
         '''
-        # Отобразить положение пробника
+        # Отобразить положение датчика
         self._ax.plot(probesPos, [0] * len(probesPos), self._probeStyle)
 
     def drawSources(self, sourcesPos: List[int]):
@@ -105,7 +105,7 @@ class AnimateFieldDisplay:
 
         sourcesPos - список координат источников (в отсчетах).
         '''
-        # Отобразить положение пробника
+        # Отобразить положение датчика
         self._ax.plot(sourcesPos, [0] * len(sourcesPos), self._sourceStyle)
 
     def stop(self):
@@ -206,5 +206,5 @@ if __name__ == '__main__':
 
     display.stop()
 
-    # Отображение сигнала, сохраненного в пробнике
+    # Отображение сигнала, сохраненного в датчиках
     showProbeSignals(probes, -1.1, 1.1)

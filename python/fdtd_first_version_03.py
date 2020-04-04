@@ -61,7 +61,7 @@ if __name__ == '__main__':
     # Отобразить положение источника
     ax.plot(sourcePos, 0, 'ok')
 
-    # Отобразить положение пробника
+    # Отобразить положение датчика
     ax.plot(probePos, 0, 'xr')
 
     for t in range(1, maxTime):
@@ -88,7 +88,7 @@ if __name__ == '__main__':
     # Отключить интерактивный режим по завершению анимации
     pylab.ioff()
 
-    # Отображение сигнала, сохраненного в пробнике
+    # Отображение сигнала, сохраненного в датчике
     tlist = numpy.arange(maxTime)
     fig, ax = pylab.subplots()
     ax.set_xlim(0, maxTime)

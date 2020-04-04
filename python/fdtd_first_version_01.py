@@ -48,7 +48,7 @@ if __name__ == '__main__':
         # Регистрация поля в точке
         probeTimeEz[t] = Ez[probePos]
 
-    # Отображение сигнала, сохраненного в пробнике
+    # Отображение сигнала, сохраненного в датчике
     tlist = numpy.arange(maxTime)
     fig, ax = pylab.subplots()
     ax.set_xlim(0, maxTime)
