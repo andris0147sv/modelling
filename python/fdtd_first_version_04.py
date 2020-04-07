@@ -86,7 +86,7 @@ class AnimateFieldDisplay:
         '''
         pylab.ioff()
 
-    def updateData(self, data):
+    def updateData(self, data: List[float]):
         '''
         Обновить данные с распределением поля в пространстве
         '''

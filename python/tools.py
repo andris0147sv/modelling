@@ -16,7 +16,8 @@ class Probe:
     def __init__(self, position: int, maxTime: int):
         '''
         position - положение датчика (номер ячейки).
-        maxTime - максимально количество временных шагов для хранения в датчике.
+        maxTime - максимально количество временных
+            шагов для хранения в датчике.
         '''
         self.position = position
 
