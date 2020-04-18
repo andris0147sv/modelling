@@ -17,7 +17,7 @@ if __name__ == '__main__':
     Sc = 1.0
 
     # Время расчета в отсчетах
-    maxTime = 350
+    maxTime = 600
 
     # Размер области моделирования в отсчетах
     maxSize = 200
@@ -63,7 +63,9 @@ if __name__ == '__main__':
         # Источник возбуждения с использованием метода
         # Total Field / Scattered Field
         Hy[sourcePos - 1] -= (Sc / (W0 * mu[sourcePos - 1]) *
-                              numpy.exp(-(t - 30.0) ** 2 / 100.0))
+                              numpy.exp(-(t - (sourcePos * numpy.sqrt(eps[sourcePos] * mu[sourcePos]) / Sc) - 30.0) ** 2 / 100.0))
+        # Hy[sourcePos - 1] -= (Sc / (W0 * mu[sourcePos - 1]) *
+        #                       numpy.exp(-(t - 30.0) ** 2 / 100.0))
 
         # Граничные условия для поля E
         Ez[0] = Ez[1]
@@ -76,7 +78,9 @@ if __name__ == '__main__':
         # Источник возбуждения с использованием метода
         # Total Field / Scattered Field
         Ez[sourcePos] += (Sc / (numpy.sqrt(eps[sourcePos] * mu[sourcePos])) *
-                          numpy.exp(-((t + 0.5) - (-0.5 * numpy.sqrt(eps[sourcePos] * mu[sourcePos]) / Sc) - 30.0) ** 2 / 100.0))
+                          numpy.exp(-((t + 0.5) - ((sourcePos - 0.5) * numpy.sqrt(eps[sourcePos] * mu[sourcePos]) / Sc) - 30.0) ** 2 / 100.0))
+        # Ez[sourcePos] += (Sc / (numpy.sqrt(eps[sourcePos] * mu[sourcePos])) *
+        #                   numpy.exp(-((t + 0.5) - (-0.5 * numpy.sqrt(eps[sourcePos] * mu[sourcePos]) / Sc) - 30.0) ** 2 / 100.0))
 
         # Регистрация поля в датчиках
         for probe in probes:
