@@ -24,7 +24,7 @@ df = 1.0 / (size * dt)
 w_g = np.sqrt(np.log(5.5 * A_max)) / (np.pi * F_max)
 d_g = w_g * np.sqrt(np.log(2.5 * A_max * np.sqrt(np.log(2.5 * A_max))))
 
-# Гауссов импульс
+# Дифференцированный гауссов импульс
 time = np.arange(0, size * dt, dt)
 gauss = -2 * ((time - d_g) / w_g) * np.exp(-((time - d_g) / w_g) ** 2)
 

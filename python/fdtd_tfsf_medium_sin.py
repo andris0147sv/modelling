@@ -39,7 +39,8 @@ if __name__ == '__main__':
 
     # Параметры гармонического сигнала
     Nl = 60
-    phi_0 = 0
+    # phi_0 = 0
+    phi_0 = -2 * numpy.pi / Nl
 
     Ez = numpy.zeros(maxSize)
     Hy = numpy.zeros(maxSize - 1)
@@ -89,7 +90,7 @@ if __name__ == '__main__':
     display.drawProbes(probesPos)
     display.drawSources([sourcePos])
 
-    for t in range(maxTime):
+    for t in range(1, maxTime):
         # Расчет компоненты поля H
         Hy = Hy + (Ez[1:] - Ez[:-1]) * Sc / (W0 * mu)
 
