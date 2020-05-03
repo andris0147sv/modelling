@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 '''
-Гауссов импульс распространяется в свободном пространстве.
-Sc < 1
+Моделирование распространения ЭМ волны, падающей на границу
+вакуум - идеальный диэлектрик.
+Используются граничные условия ABC второй степени.
 '''
 
 import numpy
@@ -21,18 +22,17 @@ if __name__ == '__main__':
     Sc = 0.9
 
     # Время расчета в отсчетах
-    maxTime = 1024
+    maxTime = 800
 
     # Размер области моделирования в отсчетах
-    maxSize = 2000
+    maxSize = 600
 
     # Положение источника в отсчетах
-    sourcePos = 1200
+    sourcePos = 50
 
     # Положения датчиков
-    probe1Pos = 1300
-    # probe2Pos = 1350
-    probe2Pos = 1500
+    probe1Pos = 100
+    probe2Pos = 300
 
     # Расстояние между датчиками
     probeDist = probe2Pos - probe1Pos
@@ -41,15 +41,50 @@ if __name__ == '__main__':
     probesPos = [probe1Pos, probe2Pos]
     probes = [tools.Probe(pos, maxTime) for pos in probesPos]
 
-    Ez = numpy.zeros(maxSize)
-    Hy = numpy.zeros(maxSize)
+    # Параметры среды
+    # Диэлектрическая проницаемость
+    eps = numpy.ones(maxSize)
 
-    # Параметры отображения поля
-    # Для поля E
+    # Магнитная проницаемость
+    mu = numpy.ones(maxSize - 1)
+
+    Ez = numpy.zeros(maxSize)
+    Hy = numpy.zeros(maxSize - 1)
+
+    # Коэффициенты для расчета ABC второй степени
+    # Sc' для левой границы
+    Sc1Left = Sc / numpy.sqrt(mu[0] * eps[0])
+
+    k1Left = -1 / (1 / Sc1Left + 2 + Sc1Left)
+    k2Left = 1 / Sc1Left - 2 + Sc1Left
+    k3Left = 2 * (Sc1Left - 1 / Sc1Left)
+    k4Left = 4 * (1 / Sc1Left + Sc1Left)
+
+    # Sc' для правой границы
+    Sc1Right = Sc / numpy.sqrt(mu[-1] * eps[-1])
+
+    k1Right = -1 / (1 / Sc1Right + 2 + Sc1Right)
+    k2Right = 1 / Sc1Right - 2 + Sc1Right
+    k3Right = 2 * (Sc1Right - 1 / Sc1Right)
+    k4Right = 4 * (1 / Sc1Right + Sc1Right)
+
+    # Ez[0: 2] в предыдущий момент времени (q)
+    oldEzLeft1 = numpy.zeros(3)
+
+    # Ez[0: 2] в пред-предыдущий момент времени (q - 1)
+    oldEzLeft2 = numpy.zeros(3)
+
+    # Ez[-3: -1] в предыдущий момент времени (q)
+    oldEzRight1 = numpy.zeros(3)
+
+    # Ez[-3: -1] в пред-предыдущий момент времени (q - 1)
+    oldEzRight2 = numpy.zeros(3)
+
+    # Параметры отображения поля E
     display_field = Ez
     display_ylabel = 'Ez, В/м'
-    display_ymin = -0.2
-    display_ymax = 0.6
+    display_ymin = -1.1
+    display_ymax = 1.1
 
     # Создание экземпляра класса для отображения
     # распределения поля в пространстве
@@ -58,29 +93,51 @@ if __name__ == '__main__':
                                         display_ylabel)
 
     display.activate()
-    display.drawSources([sourcePos])
     display.drawProbes(probesPos)
+    display.drawSources([sourcePos])
 
     # Номер индекса в спектре, в котором считаем, что фаза меняется линейно
     k_index = 10
 
     for t in range(maxTime):
         # Расчет компоненты поля H
-        Ez_shift = Ez[1:]
-        Hy[:-1] = Hy[:-1] + (Ez_shift - Ez[:-1]) * Sc / W0
+        Hy = Hy + (Ez[1:] - Ez[:-1]) * Sc / (W0 * mu)
+
+        # Источник возбуждения с использованием метода
+        # Total Field / Scattered Field
+        Hy[sourcePos - 1] -= (Sc / (W0 * mu[sourcePos - 1]) *
+                              numpy.exp(-(t - 30.0) ** 2 / 25.0))
 
         # Расчет компоненты поля E
-        Hy_shift = Hy[:-1]
-        Ez[1:] = Ez[1:] + (Hy[1:] - Hy_shift) * Sc * W0
+        Hy_shift = Hy[: -1]
+        Ez[1:-1] = Ez[1: -1] + (Hy[1:] - Hy_shift) * Sc * W0 / eps[1: -1]
 
-        # Источник возбуждения
-        Ez[sourcePos] += numpy.exp(-(t - 30.0) ** 2 / (5.0 ** 2)) * Sc
+        # Источник возбуждения с использованием метода
+        # Total Field / Scattered Field
+        Ez[sourcePos] += (Sc / (numpy.sqrt(eps[sourcePos] * mu[sourcePos])) *
+                          numpy.exp(-((t + 0.5) - (-0.5 * numpy.sqrt(eps[sourcePos] * mu[sourcePos]) / Sc) - 30.0) ** 2 / 25.0))
+
+        # Граничные условия ABC второй степени (слева)
+        Ez[0] = (k1Left * (k2Left * (Ez[2] + oldEzLeft2[0]) +
+                           k3Left * (oldEzLeft1[0] + oldEzLeft1[2] - Ez[1] - oldEzLeft2[1]) -
+                           k4Left * oldEzLeft1[1]) - oldEzLeft2[2])
+
+        oldEzLeft2[:] = oldEzLeft1[:]
+        oldEzLeft1[:] = Ez[0: 3]
+
+        # Граничные условия ABC второй степени (справа)
+        Ez[-1] = (k1Right * (k2Right * (Ez[-3] + oldEzRight2[-1]) +
+                             k3Right * (oldEzRight1[-1] + oldEzRight1[-3] - Ez[-2] - oldEzRight2[-2]) -
+                             k4Right * oldEzRight1[-2]) - oldEzRight2[-3])
+
+        oldEzRight2[:] = oldEzRight1[:]
+        oldEzRight1[:] = Ez[-3:]
 
         # Регистрация поля в датчиках
         for probe in probes:
             probe.addData(Ez, Hy)
 
-        if t % 10 == 0:
+        if t % 2 == 0:
             display.updateData(display_field, t)
 
     display.stop()
@@ -105,35 +162,35 @@ if __name__ == '__main__':
         plt.plot(EzField, label='датчик N {}'.format(n + 1))
         plt.xlabel('t, отсчет')
         plt.ylabel('Ez, В/м')
-        plt.grid()
+        plt.grid(True)
         plt.legend()
 
         # Амплитудный спектр сигнала в датчике
         plt.subplot(4, 1, 2)
         plt.plot(spectrum_abs, label='датчик N {}'.format(n + 1))
-        plt.xlabel('f')
+        plt.xlabel('f, отсчет')
         plt.ylabel('|Ez|, В/(м*Гц)')
         plt.xlim(0, 300)
-        plt.grid()
+        plt.grid(True)
         plt.legend()
 
         # Фазовый спектр сигнала в датчике без вычитания линейного члена
         plt.subplot(4, 1, 3)
         plt.plot(spectrum_phase, label='датчик N {}'.format(n + 2))
-        plt.xlabel('f')
+        plt.xlabel('f, отсчет')
         plt.ylabel('Phase(Ez), рад.')
         plt.xlim(0, 300)
-        plt.grid()
+        plt.grid(True)
         plt.legend()
 
         # Фазовый спектр сигнала в датчике
         plt.subplot(4, 1, 4)
         plt.plot(spectrum_phase_line, label='датчик N {}'.format(n + 2))
-        plt.xlabel('f')
+        plt.xlabel('f, отсчет')
         plt.ylabel('Phase(Ez), рад.')
         plt.xlim(0, 300)
         plt.ylim(-5, 5)
-        plt.grid()
+        plt.grid(True)
         plt.legend()
 
     # Сигнал и спектр в первом датчике
@@ -162,7 +219,7 @@ if __name__ == '__main__':
     plt.suptitle('Коэффициент прохождения')
     plt.subplot(3, 1, 1)
     plt.plot(numpy.abs(spectrum_0))
-    plt.xlabel('f')
+    plt.xlabel('f, отсчет')
     plt.ylabel('|Ez|, В/(м*Гц)')
     plt.xlim(0, 300)
     plt.grid()
@@ -170,7 +227,7 @@ if __name__ == '__main__':
     # Отображение амплитуды коэффициента прохождения
     plt.subplot(3, 1, 2)
     plt.plot(R_abs)
-    plt.xlabel('f')
+    plt.xlabel('f, отсчет')
     plt.ylabel('|R|')
     plt.xlim(0, 300)
     plt.ylim(0, 1.1)
@@ -179,7 +236,7 @@ if __name__ == '__main__':
     # Отображение фазы коэффициента прохождения
     plt.subplot(3, 1, 3)
     plt.plot(R_phase_line)
-    plt.xlabel('f')
+    plt.xlabel('f, отсчет')
     plt.ylabel('Phase(R), рад.')
     plt.xlim(0, 300)
     plt.ylim(-4, 4)
@@ -194,14 +251,14 @@ if __name__ == '__main__':
     plt.suptitle('Фазовая скорость')
     plt.subplot(2, 1, 1)
     plt.plot(numpy.abs(spectrum_0))
-    plt.xlabel('f')
+    plt.xlabel('f, отсчет')
     plt.ylabel('|Ez|, В/(м*Гц)')
     plt.xlim(0, 300)
     plt.grid()
 
     plt.subplot(2, 1, 2)
     plt.plot(v)
-    plt.xlabel('f')
+    plt.xlabel('f, отсчет')
     plt.ylabel('v, м/c')
     plt.xlim(0, 300)
     plt.ylim(c * 0.9, c * 1.1)
