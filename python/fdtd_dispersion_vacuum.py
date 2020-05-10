@@ -176,7 +176,7 @@ if __name__ == '__main__':
 
         # Фазовый спектр сигнала в датчике без вычитания линейного члена
         plt.subplot(4, 1, 3)
-        plt.plot(spectrum_phase, label='датчик N {}'.format(n + 2))
+        plt.plot(spectrum_phase, label='датчик N {}'.format(n + 1))
         plt.xlabel('f, отсчет')
         plt.ylabel('Phase(Ez), рад.')
         plt.xlim(0, 300)
@@ -185,7 +185,7 @@ if __name__ == '__main__':
 
         # Фазовый спектр сигнала в датчике
         plt.subplot(4, 1, 4)
-        plt.plot(spectrum_phase_line, label='датчик N {}'.format(n + 2))
+        plt.plot(spectrum_phase_line, label='датчик N {}'.format(n + 1))
         plt.xlabel('f, отсчет')
         plt.ylabel('Phase(Ez), рад.')
         plt.xlim(0, 300)
