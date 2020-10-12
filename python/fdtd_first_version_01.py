@@ -35,12 +35,12 @@ if __name__ == '__main__':
 
     for t in range(1, maxTime):
         # Расчет компоненты поля H
-        for x in range(0, maxSize - 1):
-            Hy[x] = Hy[x] + (Ez[x + 1] - Ez[x]) * Sc / W0
+        for m in range(0, maxSize - 1):
+            Hy[m] = Hy[m] + (Ez[m + 1] - Ez[m]) * Sc / W0
 
         # Расчет компоненты поля E
-        for x in range(1, maxSize):
-            Ez[x] = Ez[x] + (Hy[x] - Hy[x - 1]) * Sc * W0
+        for m in range(1, maxSize):
+            Ez[m] = Ez[m] + (Hy[m] - Hy[m - 1]) * Sc * W0
 
         # Источник возбуждения
         Ez[sourcePos] += numpy.exp(-(t - 0.5 - 30.0) ** 2 / 100.0)
