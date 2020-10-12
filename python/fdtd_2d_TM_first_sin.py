@@ -113,7 +113,7 @@ if __name__ == '__main__':
     plt.ion()
     fig = plt.figure()
 
-    for t in range(maxTime):
+    for q in range(maxTime):
         Hx[:, :-1] = (Chxh[:, :-1] * Hx[:, :-1] -
                       Chxe[:, :-1] * (Ez[:, 1:] - Ez[:, :-1]))
 
@@ -124,13 +124,13 @@ if __name__ == '__main__':
                           Cezh[1:-1, 1:-1] * ((Hy[1:-1, 1:-1] - Hy[:-2, 1:-1]) -
                                               (Hx[1:-1, 1:-1] - Hx[1:-1, :-2])))
 
-        Ez[port_x, port_y] += numpy.sin(2 * numpy.pi * t / wavelength + phi_0)
+        Ez[port_x, port_y] += numpy.sin(2 * numpy.pi * q / wavelength + phi_0)
 
-        probeTimeHx[t] = Hx[probe_x, probe_y]
-        probeTimeHy[t] = Hy[probe_x, probe_y]
-        probeTimeEz[t] = Ez[probe_x, probe_y]
+        probeTimeHx[q] = Hx[probe_x, probe_y]
+        probeTimeHy[q] = Hy[probe_x, probe_y]
+        probeTimeEz[q] = Ez[probe_x, probe_y]
 
-        if t % 2 == 0:
+        if q % 2 == 0:
             plt.clf()
             plt.imshow(visualize_field.transpose(),
                        vmin=-0.1,
@@ -143,19 +143,19 @@ if __name__ == '__main__':
     plt.figure()
     plt.subplot(3, 1, 1)
     plt.plot(probeTimeHx, 'b')
-    plt.xlabel('t, отсчет')
+    plt.xlabel('q, отсчет')
     plt.ylabel('Hx, А/м')
     plt.grid()
 
     plt.subplot(3, 1, 2)
     plt.plot(probeTimeHy, 'b')
-    plt.xlabel('t, отсчет')
+    plt.xlabel('q, отсчет')
     plt.ylabel('Hy, А/м')
     plt.grid()
 
     plt.subplot(3, 1, 3)
     plt.plot(probeTimeEz, 'r')
-    plt.xlabel('t, отсчет')
+    plt.xlabel('q, отсчет')
     plt.ylabel('Ez, В/м')
     plt.grid()
 

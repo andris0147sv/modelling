@@ -66,7 +66,7 @@ if __name__ == '__main__':
     display.drawSources([sourcePos])
     display.drawProbes(probesPos)
 
-    for t in range(1, maxTime):
+    for q in range(1, maxTime):
         # Расчет компоненты поля H
         Ez_shift = Ez[1:]
         Hy[:-1] = Hy[:-1] + (Ez_shift - Ez[:-1]) * Sc / W0
@@ -76,14 +76,14 @@ if __name__ == '__main__':
         Ez[1:] = Ez[1:] + (Hy[1:] - Hy_shift) * Sc * W0
 
         # Источник возбуждения
-        Ez[sourcePos] += numpy.exp(-(t - 0.5 - 30.0) ** 2 / 100.0)
+        Ez[sourcePos] += numpy.exp(-(q - 0.5 - 30.0) ** 2 / 100.0)
 
         # Регистрация поля в датчиках
         for probe in probes:
             probe.addData(Ez, Hy)
 
-        if t % 2 == 0:
-            display.updateData(display_field, t)
+        if q % 2 == 0:
+            display.updateData(display_field, q)
 
     display.stop()
 

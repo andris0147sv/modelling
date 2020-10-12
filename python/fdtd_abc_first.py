@@ -74,14 +74,14 @@ if __name__ == '__main__':
     display.drawSources([sourcePos])
     display.drawBoundary(layer_x)
 
-    for t in range(maxTime):
+    for q in range(maxTime):
         # Расчет компоненты поля H
         Hy = Hy + (Ez[1:] - Ez[:-1]) * Sc / (W0 * mu)
 
         # Источник возбуждения с использованием метода
         # Total Field / Scattered Field
         Hy[sourcePos - 1] -= (Sc / (W0 * mu[sourcePos - 1]) *
-                              numpy.exp(-(t - 30.0) ** 2 / 100.0))
+                              numpy.exp(-(q - 30.0) ** 2 / 100.0))
 
         # Расчет компоненты поля E
         Hy_shift = Hy[: -1]
@@ -90,7 +90,7 @@ if __name__ == '__main__':
         # Источник возбуждения с использованием метода
         # Total Field / Scattered Field
         Ez[sourcePos] += (Sc / (numpy.sqrt(eps[sourcePos] * mu[sourcePos])) *
-                          numpy.exp(-((t + 0.5) - (-0.5 * numpy.sqrt(eps[sourcePos] * mu[sourcePos]) / Sc) - 30.0) ** 2 / 100.0))
+                          numpy.exp(-((q + 0.5) - (-0.5 * numpy.sqrt(eps[sourcePos] * mu[sourcePos]) / Sc) - 30.0) ** 2 / 100.0))
 
         # Граничные условия ABC первой степени
         Ez[0] = oldEzLeft + koeffABCLeft * (Ez[1] - Ez[0])
@@ -103,8 +103,8 @@ if __name__ == '__main__':
         for probe in probes:
             probe.addData(Ez, Hy)
 
-        if t % 2 == 0:
-            display.updateData(display_field, t)
+        if q % 2 == 0:
+            display.updateData(display_field, q)
 
     display.stop()
 

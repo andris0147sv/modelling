@@ -145,7 +145,7 @@ def showProbeSignals(probes: List[Probe], minYSize: float, maxYSize: float):
     # Настройка внешнего вида графиков
     ax.set_xlim(0, len(probes[0].E))
     ax.set_ylim(minYSize, maxYSize)
-    ax.set_xlabel('t, отсчет')
+    ax.set_xlabel('q, отсчет')
     ax.set_ylabel('Ez, В/м')
     ax.grid()
 

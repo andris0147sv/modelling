@@ -59,14 +59,14 @@ if __name__ == '__main__':
     display.drawProbes(probesPos)
     display.drawSources([sourcePos])
 
-    for t in range(maxTime):
+    for q in range(maxTime):
         # Расчет компоненты поля H
         Hy = Hy + (Ez[1:] - Ez[:-1]) * Sc / (W0 * mu)
 
         # Источник возбуждения с использованием метода
         # Total Field / Scattered Field
-        Hy[sourcePos - 1] -= ((1 - 2 * (numpy.pi ** 2) * (Sc * t / Np - Md) ** 2) *
-                              numpy.exp(-numpy.pi ** 2 * (Sc * t / Np - Md) ** 2) / W0)
+        Hy[sourcePos - 1] -= ((1 - 2 * (numpy.pi ** 2) * (Sc * q / Np - Md) ** 2) *
+                              numpy.exp(-numpy.pi ** 2 * (Sc * q / Np - Md) ** 2) / W0)
 
         Ez[0] = Ez[1]
         Ez[-1] = Ez[-2]
@@ -77,15 +77,15 @@ if __name__ == '__main__':
 
         # Источник возбуждения с использованием метода
         # Total Field / Scattered Field
-        Ez[sourcePos] += ((1 - 2 * numpy.pi ** 2 * ((Sc * (t + 0.5) - (-0.5)) / Np - Md) ** 2) *
-                          numpy.exp(-numpy.pi ** 2 * ((Sc * (t + 0.5) - (-0.5)) / Np - Md) ** 2))
+        Ez[sourcePos] += ((1 - 2 * numpy.pi ** 2 * ((Sc * (q + 0.5) - (-0.5)) / Np - Md) ** 2) *
+                          numpy.exp(-numpy.pi ** 2 * ((Sc * (q + 0.5) - (-0.5)) / Np - Md) ** 2))
 
         # Регистрация поля в датчиках
         for probe in probes:
             probe.addData(Ez, Hy)
 
-        if t % 2 == 0:
-            display.updateData(display_field, t)
+        if q % 2 == 0:
+            display.updateData(display_field, q)
 
     display.stop()
 

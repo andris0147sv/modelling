@@ -110,7 +110,7 @@ if __name__ == '__main__':
     plt.ion()
     fig = plt.figure()
 
-    for t in range(maxTime):
+    for q in range(maxTime):
         Hz[:-1, :-1] = (Chzh[:-1, :-1] * Hz[:-1, :-1] +
                         Chze[:-1, :-1] * (Ex[:-1, 1:] - Ex[:-1, :-1] -
                                           (Ey[1:, :-1] - Ey[:-1, :-1])))
@@ -121,13 +121,13 @@ if __name__ == '__main__':
         Ey[1:-1, :-1] = (Ceye[1:-1, :-1] * Ey[1:-1, :-1] -
                          Ceyh[1:-1, :-1] * (Hz[1:-1, :-1] - Hz[:-2, :-1]))
 
-        Hz[port_x, port_y] += numpy.sin(2 * numpy.pi * t / wavelength + phi_0)
+        Hz[port_x, port_y] += numpy.sin(2 * numpy.pi * q / wavelength + phi_0)
 
-        probeTimeEx[t] = Ex[probe_x, probe_y]
-        probeTimeEy[t] = Ey[probe_x, probe_y]
-        probeTimeHz[t] = Hz[probe_x, probe_y]
+        probeTimeEx[q] = Ex[probe_x, probe_y]
+        probeTimeEy[q] = Ey[probe_x, probe_y]
+        probeTimeHz[q] = Hz[probe_x, probe_y]
 
-        if t % 2 == 0:
+        if q % 2 == 0:
             plt.clf()
             plt.imshow(Ex.transpose(), vmin=-100.0, vmax=100.0, cmap='jet')
             plt.scatter([probe_x], [probe_y], marker='x')
@@ -138,19 +138,19 @@ if __name__ == '__main__':
     plt.figure()
     plt.subplot(3, 1, 1)
     plt.plot(probeTimeEx, 'r')
-    plt.xlabel('t, отсчет')
+    plt.xlabel('q, отсчет')
     plt.ylabel('Ex, В/м')
     plt.grid()
 
     plt.subplot(3, 1, 2)
     plt.plot(probeTimeEy, 'r')
-    plt.xlabel('t, отсчет')
+    plt.xlabel('q, отсчет')
     plt.ylabel('Ey, В/м')
     plt.grid()
 
     plt.subplot(3, 1, 3)
     plt.plot(probeTimeHz, 'b')
-    plt.xlabel('t, отсчет')
+    plt.xlabel('q, отсчет')
     plt.ylabel('Hz, А/м')
     plt.grid()
 

@@ -99,14 +99,14 @@ if __name__ == '__main__':
     # Номер индекса в спектре, в котором считаем, что фаза меняется линейно
     k_index = 10
 
-    for t in range(maxTime):
+    for q in range(maxTime):
         # Расчет компоненты поля H
         Hy = Hy + (Ez[1:] - Ez[:-1]) * Sc / (W0 * mu)
 
         # Источник возбуждения с использованием метода
         # Total Field / Scattered Field
         Hy[sourcePos - 1] -= (Sc / (W0 * mu[sourcePos - 1]) *
-                              numpy.exp(-(t - 30.0) ** 2 / 25.0))
+                              numpy.exp(-(q - 30.0) ** 2 / 25.0))
 
         # Расчет компоненты поля E
         Hy_shift = Hy[: -1]
@@ -115,7 +115,7 @@ if __name__ == '__main__':
         # Источник возбуждения с использованием метода
         # Total Field / Scattered Field
         Ez[sourcePos] += (Sc / (numpy.sqrt(eps[sourcePos] * mu[sourcePos])) *
-                          numpy.exp(-((t + 0.5) - (-0.5 * numpy.sqrt(eps[sourcePos] * mu[sourcePos]) / Sc) - 30.0) ** 2 / 25.0))
+                          numpy.exp(-((q + 0.5) - (-0.5 * numpy.sqrt(eps[sourcePos] * mu[sourcePos]) / Sc) - 30.0) ** 2 / 25.0))
 
         # Граничные условия ABC второй степени (слева)
         Ez[0] = (k1Left * (k2Left * (Ez[2] + oldEzLeft2[0]) +
@@ -137,8 +137,8 @@ if __name__ == '__main__':
         for probe in probes:
             probe.addData(Ez, Hy)
 
-        if t % 2 == 0:
-            display.updateData(display_field, t)
+        if q % 2 == 0:
+            display.updateData(display_field, q)
 
     display.stop()
 
@@ -160,7 +160,7 @@ if __name__ == '__main__':
         # Отображение сигнала в датчике
         plt.subplot(4, 1, 1)
         plt.plot(EzField, label='датчик N {}'.format(n + 1))
-        plt.xlabel('t, отсчет')
+        plt.xlabel('q, отсчет')
         plt.ylabel('Ez, В/м')
         plt.grid(True)
         plt.legend()

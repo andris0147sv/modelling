@@ -33,7 +33,7 @@ if __name__ == '__main__':
     probeTimeEz = numpy.zeros(maxTime)
     probeTimeEz[0] = Ez[probePos]
 
-    for t in range(1, maxTime):
+    for q in range(1, maxTime):
         # Расчет компоненты поля H
         for m in range(0, maxSize - 1):
             Hy[m] = Hy[m] + (Ez[m + 1] - Ez[m]) * Sc / W0
@@ -43,17 +43,17 @@ if __name__ == '__main__':
             Ez[m] = Ez[m] + (Hy[m] - Hy[m - 1]) * Sc * W0
 
         # Источник возбуждения
-        Ez[sourcePos] += numpy.exp(-(t - 0.5 - 30.0) ** 2 / 100.0)
+        Ez[sourcePos] += numpy.exp(-(q - 0.5 - 30.0) ** 2 / 100.0)
 
         # Регистрация поля в точке
-        probeTimeEz[t] = Ez[probePos]
+        probeTimeEz[q] = Ez[probePos]
 
     # Отображение сигнала, сохраненного в датчике
     tlist = numpy.arange(maxTime)
     fig, ax = pylab.subplots()
     ax.set_xlim(0, maxTime)
     ax.set_ylim(-1.1, 1.1)
-    ax.set_xlabel('t, отсчет')
+    ax.set_xlabel('q, отсчет')
     ax.set_ylabel('Ez, В/м')
     ax.plot(tlist, probeTimeEz)
     ax.grid()
