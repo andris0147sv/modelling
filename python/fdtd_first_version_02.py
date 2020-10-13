@@ -42,6 +42,8 @@ if __name__ == '__main__':
 
     # Создание окна для графика
     fig, ax = pylab.subplots()
+    print('fig = {}'.format(type(fig)))
+    print('ax = {}'.format(type(ax)))
 
     # Установка отображаемых интервалов по осям
     ax.set_xlim(0, maxSize)
@@ -56,6 +58,7 @@ if __name__ == '__main__':
 
     # Отобразить поле в начальный момент времени
     line, = ax.plot(xlist, Ez)
+    print('line = {}'.format(type(line)))
 
     # Отобразить положение источника
     ax.plot(sourcePos, 0, 'ok')
