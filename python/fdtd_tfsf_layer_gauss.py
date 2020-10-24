@@ -69,10 +69,7 @@ if __name__ == '__main__':
     Ez = numpy.zeros(maxSize)
     Hy = numpy.zeros(maxSize - 1)
 
-    source = GaussianPlaneWave(30.0, 10.0, Sc)
-
-    # Параметры отображения поля E
-    display_field = Ez
+    source = GaussianPlaneWave(30.0, 10.0, Sc
     display_ylabel = 'Ez, В/м'
     display_ymin = -1.1
     display_ymax = 1.1
