@@ -9,6 +9,29 @@ import numpy
 import tools
 
 
+class GaussianPlaneWave:
+    ''' Класс с уравнением плоской волны для гауссова сигнала в дискретном виде
+    d - определяет задержку сигнала.
+    w - определяет ширину сигнала.
+    Sc - число Куранта.
+    eps - относительная диэлектрическая проницаемость среды, в которой расположен источник.
+    mu - относительная магнитная проницаемость среды, в которой расположен источник.
+    '''
+    def __init__(self, d, w, Sc=1.0, eps=1.0, mu=1.0):
+        self.d = d
+        self.w = w
+        self.Sc = Sc
+        self.eps = eps
+        self.mu = mu
+        
+    def getE(self, m, q):
+        '''
+        Расчет поля E в дискретной точке пространства m
+        в дискретный момент времени q
+        '''
+        return numpy.exp(-(((q - m * numpy.sqrt(self.eps * self.mu) / self.Sc) - self.d) / self.w) ** 2)
+        
+
 if __name__ == '__main__':
     # Волновое сопротивление свободного пространства
     W0 = 120.0 * numpy.pi
@@ -31,6 +54,8 @@ if __name__ == '__main__':
 
     Ez = numpy.zeros(maxSize)
     Hy = numpy.zeros(maxSize)
+
+    source = GaussianPlaneWave(30.0, 10.0, Sc)
 
     for probe in probes:
         probe.addData(Ez, Hy)
@@ -61,9 +86,9 @@ if __name__ == '__main__':
 
         # Источник возбуждения с использованием метода
         # Total Field / Scattered Field
-        Hy[sourcePos - 1] -= (Sc / W0) * numpy.exp(-(q - 30.0 - sourcePos) ** 2 / 100.0)
-        # Hy[sourcePos - 1] -= (Sc / W0) * numpy.exp(-(q - 30.0) ** 2 / 100.0)
-
+        Hy[sourcePos - 1] -= (Sc / W0) * source.getE(sourcePos, q)
+        # Hy[sourcePos - 1] -= (Sc / W0) * source.getE(0, q)
+        
         # Граничные условия для поля E
         Ez[0] = Ez[1]
 
@@ -73,9 +98,9 @@ if __name__ == '__main__':
 
         # Источник возбуждения с использованием метода
         # Total Field / Scattered Field
-        Ez[sourcePos] += Sc * numpy.exp(-((q + 0.5) - (sourcePos - 0.5) - 30.0) ** 2 / 100.0)
-        # Ez[sourcePos] += Sc * numpy.exp(-((q + 0.5) - (-0.5) - 30.0) ** 2 / 100.0)
-
+        Ez[sourcePos] += Sc * source.getE(sourcePos - 0.5, q + 0.5)
+        # Ez[sourcePos] += Sc * source.getE(-0.5, q + 0.5)
+        
         # Регистрация поля в датчиках
         for probe in probes:
             probe.addData(Ez, Hy)
