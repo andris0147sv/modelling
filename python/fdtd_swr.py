@@ -10,6 +10,29 @@ import numpy
 import tools
 
 
+class GarmonicPlaneWave:
+    ''' Класс с уравнением плоской волны для гармонического сигнала в дискретном виде
+    Nl - количество ячеек на длину.
+    phi0 - начальная фаза.
+    Sc - число Куранта.
+    eps - относительная диэлектрическая проницаемость среды, в которой расположен источник.
+    mu - относительная магнитная проницаемость среды, в которой расположен источник.
+    '''
+    def __init__(self, Nl, phi0, Sc=1.0, eps=1.0, mu=1.0):
+        self.Nl = Nl
+        self.phi0 = phi0
+        self.Sc = Sc
+        self.eps = eps
+        self.mu = mu
+
+    def getE(self, m, q):
+        '''
+        Расчет поля E в дискретной точке пространства m
+        в дискретный момент времени q
+        '''
+        return numpy.sin(2 * numpy.pi / self.Nl * (self.Sc * q - numpy.sqrt(self.mu * self.eps) * m) + self.phi0)
+
+
 if __name__ == '__main__':
     # Волновое сопротивление свободного пространства
     W0 = 120.0 * numpy.pi
@@ -37,7 +60,7 @@ if __name__ == '__main__':
     Nl = 50
 
     # Начальная фаза
-    phi_0 = -2 * numpy.pi / Nl
+    phi0 = -2 * numpy.pi / Nl
 
     # Параметры среды
     # Диэлектрическая проницаемость
@@ -49,6 +72,8 @@ if __name__ == '__main__':
 
     Ez = numpy.zeros(maxSize)
     Hy = numpy.zeros(maxSize - 1)
+
+    source = GarmonicPlaneWave(Nl, phi0, Sc)
 
     # Коэффициенты для расчета ABC второй степени
     # Sc' для левой границы
@@ -102,8 +127,7 @@ if __name__ == '__main__':
 
         # Источник возбуждения с использованием метода
         # Total Field / Scattered Field
-        Hy[sourcePos - 1] -= (Sc / (W0 * mu[sourcePos - 1]) *
-                              numpy.sin(2 * numpy.pi * q / Nl + phi_0))
+        Hy[sourcePos - 1] -= (Sc / W0) * source.getE(0, q)
 
         # Расчет компоненты поля E
         Hy_shift = Hy[: -1]
@@ -111,8 +135,7 @@ if __name__ == '__main__':
 
         # Источник возбуждения с использованием метода
         # Total Field / Scattered Field
-        Ez[sourcePos] += (Sc / (numpy.sqrt(eps[sourcePos] * mu[sourcePos])) *
-                          numpy.sin(2 * numpy.pi * (q + 0.5 - (-0.5)) / Nl + phi_0))
+        Ez[sourcePos] += Sc * source.getE(-0.5, q + 0.5)
 
         # Граничные условия ABC второй степени (слева)
         Ez[0] = (k1Left * (k2Left * (Ez[2] + oldEzLeft2[0]) +

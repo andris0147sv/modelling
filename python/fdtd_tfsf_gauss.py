@@ -23,14 +23,14 @@ class GaussianPlaneWave:
         self.Sc = Sc
         self.eps = eps
         self.mu = mu
-        
+
     def getE(self, m, q):
         '''
         Расчет поля E в дискретной точке пространства m
         в дискретный момент времени q
         '''
         return numpy.exp(-(((q - m * numpy.sqrt(self.eps * self.mu) / self.Sc) - self.d) / self.w) ** 2)
-        
+
 
 if __name__ == '__main__':
     # Волновое сопротивление свободного пространства
