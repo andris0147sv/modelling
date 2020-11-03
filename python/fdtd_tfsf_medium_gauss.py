@@ -23,7 +23,7 @@ class GaussianPlaneWave:
         self.Sc = Sc
         self.eps = eps
         self.mu = mu
-        
+
     def getE(self, m, q):
         '''
         Расчет поля E в дискретной точке пространства m
