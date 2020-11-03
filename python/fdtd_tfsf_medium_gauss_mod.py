@@ -100,9 +100,7 @@ if __name__ == '__main__':
         # Total Field / Scattered Field
         Hy[sourcePos - 1] -= Sc / (W0 * mu[sourcePos - 1]) * source.getE(0, q)
 
-        # Граничные условия для поля E
-        Ez[0] = Ez[1]
-        Ez[-1] = Ez[-2]
+        # Граничные условия для поля E - PEC
 
         # Расчет компоненты поля E
         Hy_shift = Hy[:-1]

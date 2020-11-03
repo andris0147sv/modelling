@@ -8,7 +8,7 @@ import numpy
 
 import tools
 
-class GarmonicPlaneWave:
+class HarmonicPlaneWave:
     ''' Класс с уравнением плоской волны для гармонического сигнала в дискретном виде
     Nl - количество ячеек на длину волны.
     phi0 - начальная фаза.
@@ -68,7 +68,7 @@ if __name__ == '__main__':
     Ez = numpy.zeros(maxSize)
     Hy = numpy.zeros(maxSize - 1)
 
-    source = GarmonicPlaneWave(Nl, phi0, Sc)
+    source = HarmonicPlaneWave(Nl, phi0, Sc)
 
     # Параметры отображения поля E
     display_field = Ez
