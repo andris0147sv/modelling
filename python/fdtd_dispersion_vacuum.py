@@ -11,6 +11,28 @@ import matplotlib.pyplot as plt
 
 import tools
 
+class GaussianPlaneWave:
+    ''' Класс с уравнением плоской волны для гауссова сигнала в дискретном виде
+    d - определяет задержку сигнала.
+    w - определяет ширину сигнала.
+    Sc - число Куранта.
+    eps - относительная диэлектрическая проницаемость среды, в которой расположен источник.
+    mu - относительная магнитная проницаемость среды, в которой расположен источник.
+    '''
+    def __init__(self, d, w, Sc=1.0, eps=1.0, mu=1.0):
+        self.d = d
+        self.w = w
+        self.Sc = Sc
+        self.eps = eps
+        self.mu = mu
+        
+    def getE(self, m, q):
+        '''
+        Расчет поля E в дискретной точке пространства m
+        в дискретный момент времени q
+        '''
+        return numpy.exp(-(((q - m * numpy.sqrt(self.eps * self.mu) / self.Sc) - self.d) / self.w) ** 2)
+
 
 if __name__ == '__main__':
     # Волновое сопротивление свободного пространства
@@ -50,6 +72,7 @@ if __name__ == '__main__':
 
     Ez = numpy.zeros(maxSize)
     Hy = numpy.zeros(maxSize - 1)
+    source = GaussianPlaneWave(30.0, 3.0, Sc)
 
     # Коэффициенты для расчета ABC второй степени
     # Sc' для левой границы
@@ -105,8 +128,7 @@ if __name__ == '__main__':
 
         # Источник возбуждения с использованием метода
         # Total Field / Scattered Field
-        Hy[sourcePos - 1] -= (Sc / (W0 * mu[sourcePos - 1]) *
-                              numpy.exp(-(q - 30.0) ** 2 / 25.0))
+        Hy[sourcePos - 1] -= (Sc / (W0 * mu[sourcePos - 1])) * source.getE(0, q)
 
         # Расчет компоненты поля E
         Hy_shift = Hy[: -1]
@@ -114,8 +136,8 @@ if __name__ == '__main__':
 
         # Источник возбуждения с использованием метода
         # Total Field / Scattered Field
-        Ez[sourcePos] += (Sc / (numpy.sqrt(eps[sourcePos] * mu[sourcePos])) *
-                          numpy.exp(-((q + 0.5) - (-0.5 * numpy.sqrt(eps[sourcePos] * mu[sourcePos]) / Sc) - 30.0) ** 2 / 25.0))
+        Ez[sourcePos] += ((Sc / (numpy.sqrt(eps[sourcePos] * mu[sourcePos]))) *
+                         source.getE(-0.5, q + 0.5))
 
         # Граничные условия ABC второй степени (слева)
         Ez[0] = (k1Left * (k2Left * (Ez[2] + oldEzLeft2[0]) +
